@@ -11,7 +11,6 @@ using System.Windows.Threading;
 namespace Presto.SWCamp.Lyrics {
     public class PluginEntry : PrestoPlugin {
         private LyricsWindow _lyrics;
-        private string[] lines;
 
         public override void OnLoad() {
             _lyrics = new LyricsWindow();

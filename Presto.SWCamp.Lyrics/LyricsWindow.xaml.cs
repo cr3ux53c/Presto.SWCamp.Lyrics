@@ -1,6 +1,7 @@
 ﻿using Presto.SDK;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -23,7 +24,8 @@ namespace Presto.SWCamp.Lyrics {
         DispatcherTimer timer;
         List<String> list;
         List<TimeSpan> time;
-        int currentLyricIndex = 0;
+        int currentLyricIndex;
+       //LyricsTextBoxManager lyricsTextBoxManager;
 
         public LyricsWindow() {
             InitializeComponent();
@@ -34,11 +36,14 @@ namespace Presto.SWCamp.Lyrics {
         private void Player_StreamChanged(object sender, Common.StreamChangedEventArgs e) {
             String filePath = PrestoSDK.PrestoService.Player.CurrentMusic.Path;
             // TODO:: 확장자까지 동적으로 짜르기
+            currentLyricIndex = 0;
             lyricsRaw = File.ReadAllLines(filePath.Substring(0, filePath.Length-3) + "lrc");
             list = new List<string>();
             time = new List<TimeSpan>();
+            //lyricsTextBoxManager = new LyricsTextBoxManager();
 
-            //
+
+            // 가사 파싱
             foreach (var line in lyricsRaw) {
                 if (line[1] > 64) {
                     continue;
@@ -50,14 +55,11 @@ namespace Presto.SWCamp.Lyrics {
                 time.Add(new TimeSpan(0, 0, int.Parse(timeSplited[0])
                                             , int.Parse(timeSplited[1])
                                             , int.Parse(timeSplited[2])*10));
-                // 밀리세컨드는 100 곱해야 함.
 
-                Regex regex = new Regex("[^[]]");
-
-                regex.IsMatch("fdsafdsa");
+                //Regex regex = new Regex("[^[]]");
+                //regex.IsMatch("fdsafdsa");
             }
 
-            
             // 타이밍
             timer = new DispatcherTimer {
                 Interval = TimeSpan.FromMilliseconds(10)
@@ -69,16 +71,47 @@ namespace Presto.SWCamp.Lyrics {
         private void Timer_Tick(object sender, EventArgs e) {
             int currentPlayTime = (int)PrestoSDK.PrestoService.Player.Position;
 
+            // 도입부 '노래 - 가수명' 출력
             if (currentPlayTime < time[0].TotalMilliseconds-1000*10) {
                 text_lyrics.Text = PrestoSDK.PrestoService.Player.CurrentMusic.Title + " - " + PrestoSDK.PrestoService.Player.CurrentMusic.Artist.Name;
+                currentLyricIndex = 0;
             }
 
-            if (currentPlayTime > time[currentLyricIndex].TotalMilliseconds) {
-                text_lyrics.Text = list[currentLyricIndex++];
-            } else {
-                if (currentLyricIndex > 0)
-                    text_lyrics.Text = list[--currentLyricIndex];
+            // FF 가사 이동
+            for ( ; currentLyricIndex < time.Count && currentPlayTime > time[currentLyricIndex].TotalMilliseconds;) {
+
+                // 마지막 가사 처리
+                if (currentLyricIndex == time.Count-1) {
+                    text_lyrics.Text = list[currentLyricIndex];
+                    break;
+                }
+
+                // 건너뛰는 가사 있는지 확인
+                if (currentPlayTime < time[currentLyricIndex+1].TotalMilliseconds) {
+                    text_lyrics.Text = list[currentLyricIndex++];
+                    //lyricsTextBoxManager.manager.Add(new Lyrics(list[currentLyricIndex++]));
+                    return;
+                }
+                currentLyricIndex++;
+            }
+
+            // FR 가사 이동
+            for (; currentLyricIndex > 0 && currentPlayTime < time[currentLyricIndex].TotalMilliseconds;) {
+                currentLyricIndex--;
             }
         }
+
+        //class LyricsTextBoxManager {
+        //    public ObservableCollection<Lyrics> manager = new ObservableCollection<Lyrics>();
+
+        //}
+
+        //class Lyrics {
+        //    public string Text { get; set; }
+
+        //    public Lyrics(string txt) {
+        //        Text = txt;
+        //    }
+        //}
     }
 }
