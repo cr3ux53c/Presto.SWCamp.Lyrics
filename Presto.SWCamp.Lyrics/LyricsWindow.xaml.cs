@@ -61,10 +61,6 @@ namespace Presto.SWCamp.Lyrics {
                     time.Add(timeSpan);
                     list.Add(line.Substring(threshold+1));
                 }
-
-
-                //Regex regex = new Regex("[^[]]");
-                //regex.IsMatch("fdsafdsa");
             }
 
             // 타이밍
