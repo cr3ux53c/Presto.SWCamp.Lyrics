@@ -19,7 +19,7 @@
 
         <TextBlock
             FontSize="24"
-            Text="가사가 여기에 표시됩니다."
+            Text="{Binding Player.CurrentMusic.Lyrics}"
             TextAlignment="Center" />
         
     </StackPanel>
