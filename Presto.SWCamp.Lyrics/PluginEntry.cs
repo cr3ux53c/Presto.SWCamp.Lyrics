@@ -15,22 +15,7 @@ namespace Presto.SWCamp.Lyrics {
 
         public override void OnLoad() {
             _lyrics = new LyricsWindow();
-            _lyrics.Show();
-
-            lines = File.ReadAllLines(@"C:\Users\Develop\Downloads\Presto.Lyrics.Sample\Musics\TWICE - Dance The Night Away.lrc");
-
-
-            var timer = new DispatcherTimer {
-                Interval = TimeSpan.FromMilliseconds(1)
-            };
-
-            timer.Tick += Timer_Tick;
-            timer.Start();
-
-        }
-
-        private void Timer_Tick(object sender, EventArgs e) {
-            
+            _lyrics.Show();            
         }
 
         public override void OnUnload() {

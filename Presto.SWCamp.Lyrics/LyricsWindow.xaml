@@ -19,6 +19,7 @@
 
         <TextBlock
             FontSize="24"
+            x:Name="text_lyrics"
             Text="{Binding Player.CurrentMusic.Lyrics}"
             TextAlignment="Center" />
         
