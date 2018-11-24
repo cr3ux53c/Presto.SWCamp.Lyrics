@@ -12,15 +12,23 @@
     mc:Ignorable="d" WindowStyle="None">
 
     <StackPanel VerticalAlignment="Center">
+        <Button
+            Content="  X  "
+            HorizontalAlignment="Right"
+            VerticalAlignment="Top" />
+        <CheckBox
+            Content="항상 위 "
+            HorizontalAlignment="Right"/>
         <TextBlock
             FontSize="14"
             Text="{Binding Player.CurrentMusic.Title}"
-            TextAlignment="Center" />
+            TextAlignment="Center" HorizontalAlignment="Left" Width="357" />
 
         <TextBlock
             FontSize="18"
             x:Name="text_lyrics"
             TextAlignment="Center" />
-        
+
+
     </StackPanel>
 </Window>

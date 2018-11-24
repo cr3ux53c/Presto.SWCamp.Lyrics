@@ -42,7 +42,6 @@ namespace Presto.SWCamp.Lyrics {
             lyricsRaw = File.ReadAllLines(filePath.Substring(0, filePath.Length-3) + "lrc");
             list = new List<string>();
             time = new List<TimeSpan>();
-            //lyricsTextBoxManager = new LyricsTextBoxManager();
 
             // 가사 파싱
             foreach (var line in lyricsRaw) {
