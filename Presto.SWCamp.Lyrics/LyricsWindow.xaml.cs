@@ -25,7 +25,6 @@ namespace Presto.SWCamp.Lyrics {
         List<String> list;
         List<TimeSpan> time;
         int currentLyricIndex;
-       //LyricsTextBoxManager lyricsTextBoxManager;
 
         public LyricsWindow() {
             InitializeComponent();
@@ -34,7 +33,10 @@ namespace Presto.SWCamp.Lyrics {
         }
 
         private void Player_StreamChanged(object sender, Common.StreamChangedEventArgs e) {
+            this.Activate();
+
             String filePath = PrestoSDK.PrestoService.Player.CurrentMusic.Path;
+
             // TODO:: 확장자까지 동적으로 짜르기
             currentLyricIndex = 0;
             lyricsRaw = File.ReadAllLines(filePath.Substring(0, filePath.Length-3) + "lrc");
@@ -42,19 +44,24 @@ namespace Presto.SWCamp.Lyrics {
             time = new List<TimeSpan>();
             //lyricsTextBoxManager = new LyricsTextBoxManager();
 
-
             // 가사 파싱
             foreach (var line in lyricsRaw) {
                 if (line[1] > 64) {
                     continue;
                 }
                 int threshold = line.IndexOf(']');
-                list.Add(line.Substring(threshold+1));
                 String str = line.Substring(1, threshold-1);
                 var timeSplited = str.Split(new char[] { ':', '.' });
-                time.Add(new TimeSpan(0, 0, int.Parse(timeSplited[0])
+                TimeSpan timeSpan = new TimeSpan(0, 0, int.Parse(timeSplited[0])
                                             , int.Parse(timeSplited[1])
-                                            , int.Parse(timeSplited[2])*10));
+                                            , int.Parse(timeSplited[2]) * 10);
+                if (time.Count > 0 && time[time.Count-1].TotalMilliseconds == timeSpan.TotalMilliseconds) {
+                    list[list.Count - 1] += "\n" + line.Substring(threshold + 1);
+                } else {
+                    time.Add(timeSpan);
+                    list.Add(line.Substring(threshold+1));
+                }
+
 
                 //Regex regex = new Regex("[^[]]");
                 //regex.IsMatch("fdsafdsa");
@@ -89,7 +96,6 @@ namespace Presto.SWCamp.Lyrics {
                 // 건너뛰는 가사 있는지 확인
                 if (currentPlayTime < time[currentLyricIndex+1].TotalMilliseconds) {
                     text_lyrics.Text = list[currentLyricIndex++];
-                    //lyricsTextBoxManager.manager.Add(new Lyrics(list[currentLyricIndex++]));
                     return;
                 }
                 currentLyricIndex++;
@@ -101,17 +107,10 @@ namespace Presto.SWCamp.Lyrics {
             }
         }
 
-        //class LyricsTextBoxManager {
-        //    public ObservableCollection<Lyrics> manager = new ObservableCollection<Lyrics>();
-
-        //}
-
-        //class Lyrics {
-        //    public string Text { get; set; }
-
-        //    public Lyrics(string txt) {
-        //        Text = txt;
-        //    }
-        //}
+        protected override void OnMouseMove(MouseEventArgs e) {
+            if (MouseButtonState.Pressed == Mouse.LeftButton) {
+                this.DragMove();
+            }
+        }
     }
 }

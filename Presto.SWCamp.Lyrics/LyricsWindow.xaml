@@ -6,10 +6,10 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:ps="clr-namespace:Presto.SDK;assembly=Presto.SDK"
     Title="플레이어 가사 창"
-    Width="600"
-    Height="400"
+    Width="500"
+    Height="120"
     DataContext="{x:Static ps:PrestoSDK.PrestoService}"
-    mc:Ignorable="d">
+    mc:Ignorable="d" WindowStyle="None">
 
     <StackPanel VerticalAlignment="Center">
         <TextBlock
@@ -18,9 +18,8 @@
             TextAlignment="Center" />
 
         <TextBlock
-            FontSize="24"
+            FontSize="18"
             x:Name="text_lyrics"
-            Text="{Binding Player.CurrentMusic.Lyrics}"
             TextAlignment="Center" />
         
     </StackPanel>
