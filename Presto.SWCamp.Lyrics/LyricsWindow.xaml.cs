@@ -28,9 +28,13 @@ namespace Presto.SWCamp.Lyrics {
 
         public LyricsWindow() {
             InitializeComponent();
-            lyricsWindow.AllowsTransparency = true;
+
+            //제목 표시줄 색깔 지정
+            lyricsTitle.Foreground = new SolidColorBrush(Colors.DarkBlue);
+            //텍스트블럭 색깔지정-> 3번이 현재가사, 1,2번 이전가사, 3,4번 다음가사
             text_lyrics.Foreground = new SolidColorBrush(Colors.GhostWhite);
             text_lyrics2.Foreground = new SolidColorBrush(Colors.GhostWhite);
+            text_lyrics3.Foreground = new SolidColorBrush(Colors.Chocolate);
             text_lyrics4.Foreground = new SolidColorBrush(Colors.GhostWhite);
             text_lyrics5.Foreground = new SolidColorBrush(Colors.GhostWhite);
 
@@ -39,7 +43,7 @@ namespace Presto.SWCamp.Lyrics {
 
         private void Player_StreamChanged(object sender, Common.StreamChangedEventArgs e) {
             this.Activate();
-            lyricsTitle.Foreground = new SolidColorBrush(Colors.DarkBlue);
+            
             String filePath = PrestoSDK.PrestoService.Player.CurrentMusic.Path;
 
             //앞의 노래 가사 지우기
@@ -73,6 +77,12 @@ namespace Presto.SWCamp.Lyrics {
                 }
             }
 
+            //다국어 가사이면 창크기를 늘림
+            if (list[3].Contains("\n"))
+                lyricsWindow.Height = 450;
+            else
+                lyricsWindow.Height = 200;
+
             // 타이밍
             timer = new DispatcherTimer {
                 Interval = TimeSpan.FromMilliseconds(10)
@@ -96,7 +106,6 @@ namespace Presto.SWCamp.Lyrics {
                 // 마지막 가사 처리
                 if (currentLyricIndex == time.Count-1) {
                     text_lyrics4.Text = "";
-                    text_lyrics5.Text = "";
                     text_lyrics.Text = list[currentLyricIndex - 2];
                     text_lyrics2.Text = list[currentLyricIndex - 1];
                     text_lyrics3.Text = list[currentLyricIndex];
@@ -115,7 +124,11 @@ namespace Presto.SWCamp.Lyrics {
                     text_lyrics3.Text = list[currentLyricIndex++];
                     //현재 가사 +1,2 출력
                     text_lyrics4.Text = list[currentLyricIndex];
-                    text_lyrics5.Text = list[currentLyricIndex+1];
+                    //5번째라인에 마지막줄 가사 처리
+                    if(currentLyricIndex+1 < time.Count)
+                        text_lyrics5.Text = list[currentLyricIndex+1];
+                    else
+                        text_lyrics5.Text = "";
                     return;
                 }
 

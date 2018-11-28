@@ -23,7 +23,7 @@
             Content="항상 위 "
             HorizontalAlignment="Right" Checked="TopCheck_Checked" Unchecked="TopCheck_Unchecked" IsChecked="True"/>
         <TextBlock x:Name="lyricsTitle"
-            FontSize="14"
+            FontSize="16"
             Text="{Binding Player.CurrentMusic.Title}"
             TextAlignment="Center" HorizontalAlignment="Center" Width="357" FontWeight="Bold" />
 
