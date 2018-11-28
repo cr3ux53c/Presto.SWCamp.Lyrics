@@ -107,5 +107,15 @@ namespace Presto.SWCamp.Lyrics {
                 this.DragMove();
             }
         }
+
+        private void TopCheck_Checked(object sender, RoutedEventArgs e)
+        {
+                lyricsWindow.Topmost = true;
+        }
+
+        private void TopCheck_Unchecked(object sender, RoutedEventArgs e)
+        {
+                lyricsWindow.Topmost = false;
+        }
     }
 }
