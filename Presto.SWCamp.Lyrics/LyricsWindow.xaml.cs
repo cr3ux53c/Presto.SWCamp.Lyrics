@@ -28,14 +28,25 @@ namespace Presto.SWCamp.Lyrics {
 
         public LyricsWindow() {
             InitializeComponent();
+            lyricsWindow.AllowsTransparency = true;
+            text_lyrics.Foreground = new SolidColorBrush(Colors.GhostWhite);
+            text_lyrics2.Foreground = new SolidColorBrush(Colors.GhostWhite);
+            text_lyrics4.Foreground = new SolidColorBrush(Colors.GhostWhite);
+            text_lyrics5.Foreground = new SolidColorBrush(Colors.GhostWhite);
 
             PrestoSDK.PrestoService.Player.StreamChanged += Player_StreamChanged;
         }
 
         private void Player_StreamChanged(object sender, Common.StreamChangedEventArgs e) {
             this.Activate();
-
+            lyricsTitle.Foreground = new SolidColorBrush(Colors.DarkBlue);
             String filePath = PrestoSDK.PrestoService.Player.CurrentMusic.Path;
+
+            //앞의 노래 가사 지우기
+            text_lyrics.Text = "";
+            text_lyrics2.Text = "";
+            text_lyrics4.Text = "";
+            text_lyrics5.Text = "";
 
             // TODO:: 확장자까지 동적으로 짜르기
             currentLyricIndex = 0;
@@ -72,10 +83,10 @@ namespace Presto.SWCamp.Lyrics {
 
         private void Timer_Tick(object sender, EventArgs e) {
             int currentPlayTime = (int)PrestoSDK.PrestoService.Player.Position;
-
+    
             // 도입부 '노래 - 가수명' 출력
             if (currentPlayTime < time[0].TotalMilliseconds-1000*10) {
-                text_lyrics.Text = PrestoSDK.PrestoService.Player.CurrentMusic.Title + " - " + PrestoSDK.PrestoService.Player.CurrentMusic.Artist.Name;
+                text_lyrics3.Text = PrestoSDK.PrestoService.Player.CurrentMusic.Title + " - " + PrestoSDK.PrestoService.Player.CurrentMusic.Artist.Name;
                 currentLyricIndex = 0;
             }
 
@@ -84,15 +95,30 @@ namespace Presto.SWCamp.Lyrics {
 
                 // 마지막 가사 처리
                 if (currentLyricIndex == time.Count-1) {
-                    text_lyrics.Text = list[currentLyricIndex];
+                    text_lyrics4.Text = "";
+                    text_lyrics5.Text = "";
+                    text_lyrics.Text = list[currentLyricIndex - 2];
+                    text_lyrics2.Text = list[currentLyricIndex - 1];
+                    text_lyrics3.Text = list[currentLyricIndex];
                     break;
                 }
 
+                //이전 가사가 없는 초반 가사들 처리
+                if (currentLyricIndex - 2 >= 0)
+                    text_lyrics.Text = list[currentLyricIndex - 2];
+                    
+                if(currentLyricIndex -1 >= 0)
+                    text_lyrics2.Text = list[currentLyricIndex - 1];
+
                 // 건너뛰는 가사 있는지 확인
                 if (currentPlayTime < time[currentLyricIndex+1].TotalMilliseconds) {
-                    text_lyrics.Text = list[currentLyricIndex++];
+                    text_lyrics3.Text = list[currentLyricIndex++];
+                    //현재 가사 +1,2 출력
+                    text_lyrics4.Text = list[currentLyricIndex];
+                    text_lyrics5.Text = list[currentLyricIndex+1];
                     return;
                 }
+
                 currentLyricIndex++;
             }
 
@@ -116,6 +142,11 @@ namespace Presto.SWCamp.Lyrics {
         private void TopCheck_Unchecked(object sender, RoutedEventArgs e)
         {
                 lyricsWindow.Topmost = false;
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            Close();
         }
     }
 }
