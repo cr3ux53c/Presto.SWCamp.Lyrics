@@ -20,13 +20,34 @@ using System.Windows.Threading;
 using Blue.Windows;
 using StickyWindowLibrary;
 
+namespace Pair {
+    public class Pair<T1, T2> {
+        T1 first; T2 second;
+        public T1 First { get; set; }
+        public T2 Second { get; set; }
+        Pair(T1 first, T2 second) {
+            this.first = first;
+            this.second = second;
+        }
+    }
+}
+
 namespace Presto.SWCamp.Lyrics {
     public partial class LyricsWindow : Window {
         private StickyWindow _stickyWindow;
         String[] lyricsRaw;
         DispatcherTimer timer;
-        List<String> list;
-        List<TimeSpan> time;
+
+        private class LyricsPair {
+            TimeSpan timeline;
+            string lyrics;
+            LyricsPair(TimeSpan timeline, string lyrics) {
+                this.timeline = timeline;
+                this.lyrics = lyrics;
+            }
+        }
+        List<LyricsPair> timeline;
+
         List<TextBlock> lyricsTextBlock = new List<TextBlock>();
         int currentLyricIndex;
 
@@ -89,8 +110,8 @@ namespace Presto.SWCamp.Lyrics {
                     timer.Stop();
                 return;
             }
-            list = new List<string>();
-            time = new List<TimeSpan>();
+
+            timeline = new List<LyricsPair>();
 
             // 가사 파싱
             foreach (var line in lyricsRaw) {
@@ -105,9 +126,12 @@ namespace Presto.SWCamp.Lyrics {
                                             , int.Parse(timeSplited[2]) * 10);
                 if (time.Count > 0 && time[time.Count-1].TotalMilliseconds == timeSpan.TotalMilliseconds) {
                     list[list.Count - 1] += "\n" + line.Substring(threshold + 1);
+                    timeline[timeline.Count -1].Item2 += "\n" + line.Substring(threshold + 1);
                 } else {
-                    time.Add(timeSpan);
-                    list.Add(line.Substring(threshold+1));
+                    timeline.Add(new Pair.Pair<TimeSpan, string>(timeSpan, line.Substring(threshold + 1)));
+                    timeline.Add(new LyricsPair())
+
+
                 }
             }
 
@@ -195,6 +219,7 @@ namespace Presto.SWCamp.Lyrics {
         protected override void OnMouseEnter(MouseEventArgs e) {
             base.OnMouseEnter(e);
             this.WindowStyle = WindowStyle.ToolWindow;
+            TopCheck.Visibility = Visibility.Visible;
             leaveThreshold = false;
             
         }
@@ -215,19 +240,18 @@ namespace Presto.SWCamp.Lyrics {
             dispatcher = null;
             if (leaveThreshold) {
                 this.WindowStyle = WindowStyle.None;
+                TopCheck.Visibility = Visibility.Hidden;
             }
         }
 
         // TopMost 구현
 
-        private void TopCheck_Checked(object sender, RoutedEventArgs e)
-        {
-                lyricsWindow.Topmost = true;
+        private void TopCheck_Checked(object sender, RoutedEventArgs e){
+            custlyricsWindow.Topmost = true;
         }
 
-        private void TopCheck_Unchecked(object sender, RoutedEventArgs e)
-        {
-                lyricsWindow.Topmost = false;
+        private void TopCheck_Unchecked(object sender, RoutedEventArgs e){
+            lyricsWindow.Topmost = false;
         }
 
     }
