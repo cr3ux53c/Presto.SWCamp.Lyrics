@@ -39,7 +39,6 @@ namespace Presto.SWCamp.Lyrics {
 
         List<TextBlock> lyricsTextBlock = new List<TextBlock>();
         int currentLyricIndex;
-        double OriginTop;
 
         public LyricsWindow() {
             InitializeComponent();
@@ -72,7 +71,6 @@ namespace Presto.SWCamp.Lyrics {
             _stickyWindow.StickToOther = true;
             _stickyWindow.StickOnResize = true;
             _stickyWindow.StickOnMove = true;
-            OriginTop = lyricsWindow.Top;
         }
 
         private void Player_StreamChanged(object sender, Common.StreamChangedEventArgs e) {
@@ -129,13 +127,11 @@ namespace Presto.SWCamp.Lyrics {
             //다국어 가사이면 창크기를 늘리고 위치를 위로 조금 올림
             if (timeline[3].lyrics.Contains("\n")) {
                 lyricsWindow.Height = 450;
-                lyricsWindow.Top = OriginTop;
-                lyricsWindow.Top -= 100;
+                if (lyricsWindow.Top + lyricsWindow.Height > System.Windows.Forms.Screen.PrimaryScreen.Bounds.Height)
+                    lyricsWindow.Top -= 250;
             } else {
                 lyricsWindow.Height = 200;
-                lyricsWindow.Top = OriginTop;
             }
-                
 
             // 타이밍
             timer = new DispatcherTimer {
