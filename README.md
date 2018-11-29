@@ -18,6 +18,7 @@
 ![1](https://user-images.githubusercontent.com/28856527/49240155-ea909780-f447-11e8-9a3f-3fc4cda73e4b.png)
 ![1](https://user-images.githubusercontent.com/28856527/49239947-6807d800-f447-11e8-9704-55a40158390b.gif)
 ![1](https://user-images.githubusercontent.com/28856527/49240058-a9988300-f447-11e8-9348-6e49b8897ba4.gif)
+![1](https://user-images.githubusercontent.com/28856527/49240283-2f1c3300-f448-11e8-84fb-72e15aca10e0.png)
 ## 3. 정보
 This Plug-in is tested on [Presto](http://www.kodnix.com/Services/Presto) 1.2.1.3 version.
 
