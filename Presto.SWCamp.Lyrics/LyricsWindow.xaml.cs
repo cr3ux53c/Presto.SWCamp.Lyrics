@@ -19,6 +19,7 @@ using System.Windows.Shapes;
 using System.Windows.Threading;
 using Blue.Windows;
 using StickyWindowLibrary;
+using System.Drawing;
 
 namespace Presto.SWCamp.Lyrics {
     public partial class LyricsWindow : Window {
@@ -28,6 +29,7 @@ namespace Presto.SWCamp.Lyrics {
         List<String> list;
         List<TimeSpan> time;
         int currentLyricIndex;
+        double OriginTop;
 
         public LyricsWindow() {
             InitializeComponent();
@@ -44,7 +46,6 @@ namespace Presto.SWCamp.Lyrics {
             text_lyrics4.Foreground.Opacity = 0.6;
             text_lyrics5.Foreground = new SolidColorBrush(Colors.GhostWhite);
             text_lyrics5.Foreground.Opacity = 0.3;
-
             PrestoSDK.PrestoService.Player.StreamChanged += Player_StreamChanged;
         }
 
@@ -55,13 +56,14 @@ namespace Presto.SWCamp.Lyrics {
             _stickyWindow.StickToOther = true;
             _stickyWindow.StickOnResize = true;
             _stickyWindow.StickOnMove = true;
+            OriginTop = lyricsWindow.Top;
         }
 
         private void Player_StreamChanged(object sender, Common.StreamChangedEventArgs e) {
-            this.Activate();
             
             String filePath = PrestoSDK.PrestoService.Player.CurrentMusic.Path;
 
+            
             //앞의 노래 가사 지우기
             text_lyrics.Text = "";
             text_lyrics2.Text = "";
@@ -73,6 +75,7 @@ namespace Presto.SWCamp.Lyrics {
             ImageBrush BackPicture = new ImageBrush(new BitmapImage(new Uri(albumPicture)));
 
             BackPicture.Opacity = 0.2;
+            BackPicture.Stretch = Stretch.UniformToFill;
             this.Background = BackPicture;
 
             // TODO:: 확장자까지 동적으로 짜르기
@@ -100,11 +103,19 @@ namespace Presto.SWCamp.Lyrics {
                 }
             }
 
-            //다국어 가사이면 창크기를 늘림
+            //다국어 가사이면 창크기를 늘리고 위치를 위로 조금 올림
             if (list[3].Contains("\n"))
+            {
                 lyricsWindow.Height = 450;
+                lyricsWindow.Top = OriginTop;
+                lyricsWindow.Top -= 100;
+            }
             else
+            {
                 lyricsWindow.Height = 200;
+                lyricsWindow.Top = OriginTop;
+            }
+                
 
             // 타이밍
             timer = new DispatcherTimer {
