@@ -1,4 +1,4 @@
-﻿<Window
+﻿<Window x:Name="lyricsWindow"
     x:Class="Presto.SWCamp.Lyrics.LyricsWindow"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -7,26 +7,45 @@
     xmlns:ps="clr-namespace:Presto.SDK;assembly=Presto.SDK"
     Title="플레이어 가사 창"
     Width="500"
-    Height="120"
+    Height="200"
     DataContext="{x:Static ps:PrestoSDK.PrestoService}"
-    mc:Ignorable="d" WindowStyle="None">
+    mc:Ignorable="d" AllowsTransparency="True" WindowStyle="None" WindowStartupLocation="CenterScreen">
+    <Window.Background>
+        <SolidColorBrush Color="#4CC8C8C8"/>
+    </Window.Background>
 
-    <StackPanel VerticalAlignment="Center">
+    <StackPanel VerticalAlignment="Top">
         <Button
             Content="  X  "
             HorizontalAlignment="Right"
-            VerticalAlignment="Top" />
-        <CheckBox
+            VerticalAlignment="Top" Click="Button_Click" />
+        <CheckBox x:Name="TopCheck"
             Content="항상 위 "
-            HorizontalAlignment="Right"/>
-        <TextBlock
-            FontSize="14"
+            HorizontalAlignment="Right" Checked="TopCheck_Checked" Unchecked="TopCheck_Unchecked" IsChecked="True"/>
+        <TextBlock x:Name="lyricsTitle"
+            FontSize="16"
             Text="{Binding Player.CurrentMusic.Title}"
-            TextAlignment="Center" HorizontalAlignment="Left" Width="357" />
+            TextAlignment="Center" HorizontalAlignment="Center" Width="357" FontWeight="Bold" />
 
         <TextBlock
             FontSize="18"
             x:Name="text_lyrics"
+            TextAlignment="Center" Margin="0,10,0,0" />
+        <TextBlock
+            FontSize="18"
+            x:Name="text_lyrics2"
+            TextAlignment="Center" />
+        <TextBlock
+            FontSize="18"
+            x:Name="text_lyrics3"
+            TextAlignment="Center" FontWeight="Bold" />
+        <TextBlock
+            FontSize="18"
+            x:Name="text_lyrics4"
+            TextAlignment="Center" />
+        <TextBlock
+            FontSize="18"
+            x:Name="text_lyrics5"
             TextAlignment="Center" />
 
 
