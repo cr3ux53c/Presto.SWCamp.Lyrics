@@ -34,32 +34,23 @@ namespace Presto.SWCamp.Lyrics {
             InitializeComponent();
             this.Loaded += onLoaded;
 
-            //텍스트블럭 색깔지정-> 3번이 현재가사, 1,2번 이전가사, 3,4번 다음가사
             lyricsTextBlock.Add(text_lyrics);
             lyricsTextBlock.Add(text_lyrics2);
             lyricsTextBlock.Add(text_lyrics3);
             lyricsTextBlock.Add(text_lyrics4);
             lyricsTextBlock.Add(text_lyrics5);
-            //텍스트블럭 색깔지정-> 3번이 현재가사, 1,2번 이전가사, 4,5번 다음가사
-            //가사별 투명도 별도 지정(현재 가사에 집중됨)
-            text_lyrics.Foreground = new SolidColorBrush(Colors.GhostWhite);
-            text_lyrics.Foreground.Opacity = 0.3;
-            text_lyrics2.Foreground = new SolidColorBrush(Colors.GhostWhite);
-            text_lyrics2.Foreground.Opacity = 0.6;
-            text_lyrics3.Foreground = new SolidColorBrush(Colors.Chocolate);
-            text_lyrics4.Foreground = new SolidColorBrush(Colors.GhostWhite);
-            text_lyrics4.Foreground.Opacity = 0.6;
-            text_lyrics5.Foreground = new SolidColorBrush(Colors.GhostWhite);
-            text_lyrics5.Foreground.Opacity = 0.3;
 
-            lyricsTextBlock[0].Foreground = new SolidColorBrush(Colors.GhostWhite);
-            lyricsTextBlock[1].Foreground = new SolidColorBrush(Colors.GhostWhite);
+            //텍스트블럭 색깔지정-> 3번이 현재가사, 1,2번 이전가사, 4,5번 다음가사
+            foreach (TextBlock lyrics in lyricsTextBlock)
+                lyrics.Foreground = new SolidColorBrush(Colors.GhostWhite);
+            lyricsTextBlock[0].Foreground.Opacity = 0.3;
+            lyricsTextBlock[1].Foreground.Opacity = 0.6;
             lyricsTextBlock[2].Foreground = new SolidColorBrush(Colors.Chocolate);
-            lyricsTextBlock[3].Foreground = new SolidColorBrush(Colors.GhostWhite);
-            lyricsTextBlock[4].Foreground = new SolidColorBrush(Colors.GhostWhite);
+            lyricsTextBlock[3].Foreground.Opacity = 0.6;
+            lyricsTextBlock[4].Foreground.Opacity = 0.3;
+            
             PrestoSDK.PrestoService.Player.StreamChanged += Player_StreamChanged;
         }
-
 
         void onLoaded(object sender, RoutedEventArgs e) {
             _stickyWindow = new StickyWindow(this);
