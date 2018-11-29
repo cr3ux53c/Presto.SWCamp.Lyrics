@@ -66,11 +66,9 @@ namespace Presto.SWCamp.Lyrics {
             String filePath = PrestoSDK.PrestoService.Player.CurrentMusic.Path;
 
             //앞의 노래 가사 지우기
-            text_lyrics.Text = "";
-            text_lyrics2.Text = "";
-            text_lyrics4.Text = "";
-            text_lyrics5.Text = "";
-
+            foreach (TextBlock lyrics in lyricsTextBlock)
+                lyrics.Text = "";
+            
             //윈도우폼 배경을 현재 앨범 이미지로 변경
             String albumPicture = PrestoSDK.PrestoService.Player.CurrentMusic.Album.Picture;
             ImageBrush BackPicture = new ImageBrush(new BitmapImage(new Uri(albumPicture)));
@@ -78,9 +76,19 @@ namespace Presto.SWCamp.Lyrics {
             BackPicture.Opacity = 0.2;
             this.Background = BackPicture;
 
-            // TODO:: 확장자까지 동적으로 짜르기
+            // 가사 파일 읽기
             currentLyricIndex = 0;
-            lyricsRaw = File.ReadAllLines(filePath.Substring(0, filePath.Length-3) + "lrc");
+            try {
+                lyricsRaw = File.ReadAllLines(filePath.Substring(0, filePath.Length-4) + ".lrc");
+            }catch (System.IO.FileNotFoundException) {
+                this.Title = "Presto Floating Lyrics";
+                foreach (TextBlock lyrics in lyricsTextBlock)
+                    lyrics.Text = "";
+                lyricsTextBlock[1].Text = "가사 파일 없음";
+                if (timer != null)
+                    timer.Stop();
+                return;
+            }
             list = new List<string>();
             time = new List<TimeSpan>();
 
