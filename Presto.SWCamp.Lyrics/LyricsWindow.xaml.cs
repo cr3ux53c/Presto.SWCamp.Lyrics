@@ -33,12 +33,17 @@ namespace Presto.SWCamp.Lyrics {
             InitializeComponent();
             this.Loaded += onLoaded;
 
-            //텍스트블럭 색깔지정-> 3번이 현재가사, 1,2번 이전가사, 3,4번 다음가사
+            //텍스트블럭 색깔지정-> 3번이 현재가사, 1,2번 이전가사, 4,5번 다음가사
+            //가사별 투명도 별도 지정(현재 가사에 집중됨)
             text_lyrics.Foreground = new SolidColorBrush(Colors.GhostWhite);
+            text_lyrics.Foreground.Opacity = 0.3;
             text_lyrics2.Foreground = new SolidColorBrush(Colors.GhostWhite);
+            text_lyrics2.Foreground.Opacity = 0.6;
             text_lyrics3.Foreground = new SolidColorBrush(Colors.Chocolate);
             text_lyrics4.Foreground = new SolidColorBrush(Colors.GhostWhite);
+            text_lyrics4.Foreground.Opacity = 0.6;
             text_lyrics5.Foreground = new SolidColorBrush(Colors.GhostWhite);
+            text_lyrics5.Foreground.Opacity = 0.3;
 
             PrestoSDK.PrestoService.Player.StreamChanged += Player_StreamChanged;
         }
@@ -62,6 +67,13 @@ namespace Presto.SWCamp.Lyrics {
             text_lyrics2.Text = "";
             text_lyrics4.Text = "";
             text_lyrics5.Text = "";
+
+            //윈도우폼 배경을 현재 앨범 이미지로 변경
+            String albumPicture = PrestoSDK.PrestoService.Player.CurrentMusic.Album.Picture;
+            ImageBrush BackPicture = new ImageBrush(new BitmapImage(new Uri(albumPicture)));
+
+            BackPicture.Opacity = 0.2;
+            this.Background = BackPicture;
 
             // TODO:: 확장자까지 동적으로 짜르기
             currentLyricIndex = 0;
