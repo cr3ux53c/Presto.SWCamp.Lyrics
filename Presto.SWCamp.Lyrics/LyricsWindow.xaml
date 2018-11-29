@@ -13,13 +13,13 @@
     WindowStartupLocation="CenterOwner"
     WindowStyle="ToolWindow"
     ResizeMode="NoResize" Opacity="0.8">
+    <Window.Background>
+        <SolidColorBrush Color="#191E23"/>
+    </Window.Background>
     <!--<Window.Background>
         <ImageBrush ImageSource="B:/tmp/logo.png" />
     </Window.Background>-->
-    <!--AllowsTransparency="True"
-    <Window.Background>
-        <SolidColorBrush Color="#4CC8C8C8"/>
-    </Window.Background>-->
+    <!--AllowsTransparency="True"-->
 
     <StackPanel VerticalAlignment="Center">
         <CheckBox x:Name="TopCheck" VerticalAlignment="Top" HorizontalAlignment="Right" Content="항상 위로" Checked="TopCheck_Checked" Unchecked="TopCheck_Unchecked" IsChecked="True" Margin="0,0,5,0">
