@@ -283,7 +283,7 @@ namespace Presto.SWCamp.Lyrics {
         }
 
         private void Timer_Tick_Sliding_Window(object sender, EventArgs e) {
-            if (SlidingWindowSize >= 5) SlidingWindowSize -= 4;
+            if (SlidingWindowSize >= 5) SlidingWindowSize -= 2;
 
             if (button_full_lyrics.Content.Equals("∨")) { // TO INCREASE
                 // runOnce
@@ -304,7 +304,7 @@ namespace Presto.SWCamp.Lyrics {
                     this.Height = WINDOW_HEIGHT_FULL_LYRICS;
                     timerSlidingWindow.Stop();
                     button_full_lyrics.Content = "∧";
-                    SlidingWindowSize = 40;
+                    SlidingWindowSize = 32;
                     isFullLyricsViewer = true;
                 }
             } else {                                       // TO DECRESE
@@ -326,7 +326,7 @@ namespace Presto.SWCamp.Lyrics {
                     this.Height = (isMultilineLyrics ? WINDOW_HEIGHT_MULTILINE : WINDOW_HEIGHT_NORMAL);
                     timerSlidingWindow.Stop();
                     button_full_lyrics.Content = "∨";
-                    SlidingWindowSize = 40;
+                    SlidingWindowSize = 32;
                     isFullLyricsViewer = false;
                 }
             }
