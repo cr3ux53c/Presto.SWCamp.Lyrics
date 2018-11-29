@@ -17,7 +17,7 @@
 ## 2. 스크린샷
 
 ## 3. 정보
-This Plug-in is tested on Presto 1.2.1.3 version.
+This Plug-in is tested on [Presto](http://www.kodnix.com/Services/Presto) 1.2.1.3 version.
 
 This Plug-in is free software released under the MIT License.
 
