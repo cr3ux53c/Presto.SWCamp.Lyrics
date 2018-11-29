@@ -32,11 +32,7 @@ namespace Presto.SWCamp.Lyrics {
         public LyricsWindow() {
             InitializeComponent();
             this.Loaded += onLoaded;
-            PrestoSDK.PrestoService.Player.StreamChanged += Player_StreamChanged;
-        }
 
-            //제목 표시줄 색깔 지정
-            lyricsTitle.Foreground = new SolidColorBrush(Colors.DarkBlue);
             //텍스트블럭 색깔지정-> 3번이 현재가사, 1,2번 이전가사, 3,4번 다음가사
             text_lyrics.Foreground = new SolidColorBrush(Colors.GhostWhite);
             text_lyrics2.Foreground = new SolidColorBrush(Colors.GhostWhite);
@@ -45,6 +41,9 @@ namespace Presto.SWCamp.Lyrics {
             text_lyrics5.Foreground = new SolidColorBrush(Colors.GhostWhite);
 
             PrestoSDK.PrestoService.Player.StreamChanged += Player_StreamChanged;
+        }
+
+
         void onLoaded(object sender, RoutedEventArgs e) {
             _stickyWindow = new StickyWindow(this);
             _stickyWindow.StickToScreen = true;
@@ -196,6 +195,8 @@ namespace Presto.SWCamp.Lyrics {
             }
         }
 
+        // TopMost 구현
+
         private void TopCheck_Checked(object sender, RoutedEventArgs e)
         {
                 lyricsWindow.Topmost = true;
@@ -206,9 +207,5 @@ namespace Presto.SWCamp.Lyrics {
                 lyricsWindow.Topmost = false;
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
-        {
-            Close();
-        }
     }
 }

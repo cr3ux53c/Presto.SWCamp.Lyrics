@@ -9,19 +9,28 @@
     Width="500"
     Height="200"
     DataContext="{x:Static ps:PrestoSDK.PrestoService}"
-    mc:Ignorable="d" AllowsTransparency="True" WindowStyle="None" WindowStartupLocation="CenterScreen">
-    <Window.Background>
-        <SolidColorBrush Color="#4CC8C8C8"/>
-    </Window.Background>
     mc:Ignorable="d"
+    WindowStartupLocation="CenterScreen"
     WindowStyle="ToolWindow"
     ResizeMode="NoResize">
 
+    <!--AllowsTransparency="True"-->
+    <!--<Window.Background>
+        <SolidColorBrush Color="#4CC8C8C8"/>
+    </Window.Background>-->
+    
     <StackPanel VerticalAlignment="Center">
+        
         <!--<TextBlock
             FontSize="14"
             Text="{Binding Player.CurrentMusic.Title}"
             TextAlignment="Center" HorizontalAlignment="Left" Width="357" />-->
+        
+        <!--ToolWindow 일 때 보여지므로 폐기-->
+        <!--<TextBlock x:Name="lyricsTitle"
+            FontSize="14"
+            Text="{Binding Player.CurrentMusic.Title}"
+            TextAlignment="Center" HorizontalAlignment="Center" Width="357" FontWeight="Bold" />-->
 
         <TextBlock
             FontSize="18"
