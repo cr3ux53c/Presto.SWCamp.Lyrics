@@ -19,6 +19,7 @@ using System.Windows.Shapes;
 using System.Windows.Threading;
 using Blue.Windows;
 using StickyWindowLibrary;
+using System.Drawing;
 
 namespace Pair {
     public class Pair<T1, T2> {
@@ -50,11 +51,15 @@ namespace Presto.SWCamp.Lyrics {
 
         List<TextBlock> lyricsTextBlock = new List<TextBlock>();
         int currentLyricIndex;
+        double OriginTop;
 
         public LyricsWindow() {
             InitializeComponent();
             this.Loaded += onLoaded;
 
+
+            //텍스트블럭 색깔지정-> 3번이 현재가사, 1,2번 이전가사, 4,5번 다음가사
+            //가사별 투명도 별도 지정(현재 가사에 집중됨)
             lyricsTextBlock.Add(text_lyrics);
             lyricsTextBlock.Add(text_lyrics2);
             lyricsTextBlock.Add(text_lyrics3);
@@ -69,7 +74,7 @@ namespace Presto.SWCamp.Lyrics {
             lyricsTextBlock[2].Foreground = new SolidColorBrush(Colors.Chocolate);
             lyricsTextBlock[3].Foreground.Opacity = 0.6;
             lyricsTextBlock[4].Foreground.Opacity = 0.3;
-            
+
             PrestoSDK.PrestoService.Player.StreamChanged += Player_StreamChanged;
         }
 
@@ -79,13 +84,14 @@ namespace Presto.SWCamp.Lyrics {
             _stickyWindow.StickToOther = true;
             _stickyWindow.StickOnResize = true;
             _stickyWindow.StickOnMove = true;
+            OriginTop = lyricsWindow.Top;
         }
 
         private void Player_StreamChanged(object sender, Common.StreamChangedEventArgs e) {
-            this.Activate();
             
             String filePath = PrestoSDK.PrestoService.Player.CurrentMusic.Path;
 
+            
             //앞의 노래 가사 지우기
             foreach (TextBlock lyrics in lyricsTextBlock)
                 lyrics.Text = "";
@@ -95,6 +101,7 @@ namespace Presto.SWCamp.Lyrics {
             ImageBrush BackPicture = new ImageBrush(new BitmapImage(new Uri(albumPicture)));
 
             BackPicture.Opacity = 0.2;
+            BackPicture.Stretch = Stretch.UniformToFill;
             this.Background = BackPicture;
 
             // 가사 파일 읽기
@@ -135,11 +142,19 @@ namespace Presto.SWCamp.Lyrics {
                 }
             }
 
-            //다국어 가사이면 창크기를 늘림
+            //다국어 가사이면 창크기를 늘리고 위치를 위로 조금 올림
             if (list[3].Contains("\n"))
+            {
                 lyricsWindow.Height = 450;
+                lyricsWindow.Top = OriginTop;
+                lyricsWindow.Top -= 100;
+            }
             else
+            {
                 lyricsWindow.Height = 200;
+                lyricsWindow.Top = OriginTop;
+            }
+                
 
             // 타이밍
             timer = new DispatcherTimer {

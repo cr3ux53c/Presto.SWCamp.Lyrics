@@ -97,6 +97,9 @@
       <Name>StickyWindowLibrary</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Resources\" />
+  </ItemGroup>
   <PropertyGroup>
     <StartAction>Program</StartAction>
     <StartProgram>$(Presto)\Presto.exe</StartProgram>
