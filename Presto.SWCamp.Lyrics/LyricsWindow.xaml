@@ -57,6 +57,5 @@
             x:Name="text_lyrics5"
             TextAlignment="Center" />
 
-
     </StackPanel>
 </Window>

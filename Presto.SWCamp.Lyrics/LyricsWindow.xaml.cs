@@ -21,18 +21,6 @@ using Blue.Windows;
 using StickyWindowLibrary;
 using System.Drawing;
 
-namespace Pair {
-    public class Pair<T1, T2> {
-        T1 first; T2 second;
-        public T1 First { get; set; }
-        public T2 Second { get; set; }
-        Pair(T1 first, T2 second) {
-            this.first = first;
-            this.second = second;
-        }
-    }
-}
-
 namespace Presto.SWCamp.Lyrics {
     public partial class LyricsWindow : Window {
         private StickyWindow _stickyWindow;
@@ -40,9 +28,9 @@ namespace Presto.SWCamp.Lyrics {
         DispatcherTimer timer;
 
         private class LyricsPair {
-            TimeSpan timeline;
-            string lyrics;
-            LyricsPair(TimeSpan timeline, string lyrics) {
+            public TimeSpan timeline;
+            public string lyrics;
+            public LyricsPair(TimeSpan timeline, string lyrics) {
                 this.timeline = timeline;
                 this.lyrics = lyrics;
             }
@@ -131,26 +119,19 @@ namespace Presto.SWCamp.Lyrics {
                 TimeSpan timeSpan = new TimeSpan(0, 0, int.Parse(timeSplited[0])
                                             , int.Parse(timeSplited[1])
                                             , int.Parse(timeSplited[2]) * 10);
-                if (time.Count > 0 && time[time.Count-1].TotalMilliseconds == timeSpan.TotalMilliseconds) {
-                    list[list.Count - 1] += "\n" + line.Substring(threshold + 1);
-                    timeline[timeline.Count -1].Item2 += "\n" + line.Substring(threshold + 1);
+                if (timeline.Count > 0 && timeline[timeline.Count-1].timeline.TotalMilliseconds == timeSpan.TotalMilliseconds) {
+                    timeline[timeline.Count -1].lyrics += "\n" + line.Substring(threshold + 1);
                 } else {
-                    timeline.Add(new Pair.Pair<TimeSpan, string>(timeSpan, line.Substring(threshold + 1)));
-                    timeline.Add(new LyricsPair())
-
-
+                    timeline.Add(new LyricsPair(timeSpan, line.Substring(threshold + 1)));
                 }
             }
 
             //다국어 가사이면 창크기를 늘리고 위치를 위로 조금 올림
-            if (list[3].Contains("\n"))
-            {
+            if (timeline[3].lyrics.Contains("\n")) {
                 lyricsWindow.Height = 450;
                 lyricsWindow.Top = OriginTop;
                 lyricsWindow.Top -= 100;
-            }
-            else
-            {
+            } else {
                 lyricsWindow.Height = 200;
                 lyricsWindow.Top = OriginTop;
             }
@@ -169,38 +150,38 @@ namespace Presto.SWCamp.Lyrics {
 
             this.Title = PrestoSDK.PrestoService.Player.CurrentMusic.Title + " - " + PrestoSDK.PrestoService.Player.CurrentMusic.Artist.Name; ;
             // 도입부 '노래 - 가수명' 출력
-            if (currentPlayTime < time[0].TotalMilliseconds-1000*10) {
+            if (currentPlayTime < timeline[0].timeline.TotalMilliseconds-1000*10) {
                 text_lyrics3.Text = PrestoSDK.PrestoService.Player.CurrentMusic.Title + " - " + PrestoSDK.PrestoService.Player.CurrentMusic.Artist.Name;
                 currentLyricIndex = 0;
             }
 
             // FF 가사 이동
-            for ( ; currentLyricIndex < time.Count && currentPlayTime > time[currentLyricIndex].TotalMilliseconds;) {
+            for ( ; currentLyricIndex < timeline.Count && currentPlayTime > timeline[currentLyricIndex].timeline.TotalMilliseconds;) {
 
                 // 마지막 가사 처리
-                if (currentLyricIndex == time.Count-1) {
+                if (currentLyricIndex == timeline.Count-1) {
                     text_lyrics4.Text = "";
-                    text_lyrics.Text = list[currentLyricIndex - 2];
-                    text_lyrics2.Text = list[currentLyricIndex - 1];
-                    text_lyrics3.Text = list[currentLyricIndex];
+                    text_lyrics.Text = timeline[currentLyricIndex - 2].lyrics;
+                    text_lyrics2.Text = timeline[currentLyricIndex - 1].lyrics;
+                    text_lyrics3.Text = timeline[currentLyricIndex].lyrics;
                     break;
                 }
 
                 //이전 가사가 없는 초반 가사들 처리
                 if (currentLyricIndex - 2 >= 0)
-                    text_lyrics.Text = list[currentLyricIndex - 2];
+                    text_lyrics.Text = timeline[currentLyricIndex - 2].lyrics;
                     
                 if(currentLyricIndex -1 >= 0)
-                    text_lyrics2.Text = list[currentLyricIndex - 1];
+                    text_lyrics2.Text = timeline[currentLyricIndex - 1].lyrics;
 
                 // 건너뛰는 가사 있는지 확인
-                if (currentPlayTime < time[currentLyricIndex+1].TotalMilliseconds) {
-                    text_lyrics3.Text = list[currentLyricIndex++];
+                if (currentPlayTime < timeline[currentLyricIndex+1].timeline.TotalMilliseconds) {
+                    text_lyrics3.Text = timeline[currentLyricIndex++].lyrics;
                     //현재 가사 +1,2 출력
-                    text_lyrics4.Text = list[currentLyricIndex];
+                    text_lyrics4.Text = timeline[currentLyricIndex].lyrics;
                     //5번째라인에 마지막줄 가사 처리
-                    if(currentLyricIndex+1 < time.Count)
-                        text_lyrics5.Text = list[currentLyricIndex+1];
+                    if(currentLyricIndex+1 < timeline.Count)
+                        text_lyrics5.Text = timeline[currentLyricIndex+1].lyrics;
                     else
                         text_lyrics5.Text = "";
                     return;
@@ -210,7 +191,7 @@ namespace Presto.SWCamp.Lyrics {
             }
 
             // FR 가사 이동
-            for (; currentLyricIndex > 0 && currentPlayTime < time[currentLyricIndex].TotalMilliseconds;) {
+            for (; currentLyricIndex > 0 && currentPlayTime < timeline[currentLyricIndex].timeline.TotalMilliseconds;) {
                 currentLyricIndex--;
             }
         }
@@ -262,7 +243,7 @@ namespace Presto.SWCamp.Lyrics {
         // TopMost 구현
 
         private void TopCheck_Checked(object sender, RoutedEventArgs e){
-            custlyricsWindow.Topmost = true;
+            lyricsWindow.Topmost = true;
         }
 
         private void TopCheck_Unchecked(object sender, RoutedEventArgs e){
