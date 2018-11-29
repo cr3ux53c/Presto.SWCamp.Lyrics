@@ -13,6 +13,7 @@
     WindowStartupLocation="CenterScreen"
     ResizeMode="NoResize" Opacity="0.8">
 
+
     <!--AllowsTransparency="True"
     <Window.Background>
         <SolidColorBrush Color="#4CC8C8C8"/>
