@@ -7,7 +7,7 @@
     xmlns:ps="clr-namespace:Presto.SDK;assembly=Presto.SDK"
     Title="Presto Floating Lyrics"
     Width="500"
-    Height="200"
+    Height="230"
     DataContext="{x:Static ps:PrestoSDK.PrestoService}"
     mc:Ignorable="d"
     WindowStartupLocation="CenterOwner"
@@ -20,18 +20,7 @@
     </Window.Background>-->
 
     <StackPanel VerticalAlignment="Center">
-
-        <!--<TextBlock
-            FontSize="14"
-            Text="{Binding Player.CurrentMusic.Title}"
-            TextAlignment="Center" HorizontalAlignment="Left" Width="357" />-->
-
-        <!--ToolWindow 일 때 보여지므로 폐기-->
-        <!--<TextBlock x:Name="lyricsTitle"
-            FontSize="14"
-            Text="{Binding Player.CurrentMusic.Title}"
-            TextAlignment="Center" HorizontalAlignment="Center" Width="357" FontWeight="Bold" />-->
-        <CheckBox x:Name="TopCheck" VerticalAlignment="Top" HorizontalAlignment="Right" Content="항상 위로" Checked="TopCheck_Checked" Unchecked="TopCheck_Unchecked" IsChecked="True" Margin="0,0,5,0">
+        <CheckBox x:Name="TopCheck" VerticalAlignment="Top" HorizontalAlignment="Right" Content="항상 위로" Checked="TopCheck_Checked" Unchecked="TopCheck_Unchecked" IsChecked="False" Margin="0,0,5,0">
             <CheckBox.Foreground>
                 <SolidColorBrush Color="{DynamicResource {x:Static SystemColors.GradientActiveCaptionColorKey}}"/>
             </CheckBox.Foreground>
@@ -57,5 +46,27 @@
             x:Name="text_lyrics5"
             TextAlignment="Center" />
 
+        <ScrollViewer
+            x:Name="scroll_full_lyrics"
+            Visibility="Collapsed"
+            Height="400"
+            HorizontalScrollBarVisibility="Hidden"
+            VerticalScrollBarVisibility="Visible">
+            <TextBox
+                FontSize="18"
+                x:Name="text_full_lyrics"
+                Background="Transparent"
+                TextAlignment="Center"
+                IsReadOnly="true"
+                Foreground="Azure"
+                BorderThickness="0"
+                />
+        </ScrollViewer>
+        
+        <Button
+            x:Name="button_full_lyrics"
+            Content="∨"
+            Width="100" Height="20" Margin="0, 10, 0, 10"
+            />
     </StackPanel>
 </Window>
