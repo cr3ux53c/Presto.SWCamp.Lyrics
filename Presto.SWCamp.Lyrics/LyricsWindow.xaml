@@ -9,20 +9,15 @@
     Width="500"
     Height="120"
     DataContext="{x:Static ps:PrestoSDK.PrestoService}"
-    mc:Ignorable="d" WindowStyle="None">
+    mc:Ignorable="d"
+    WindowStyle="ToolWindow"
+    ResizeMode="NoResize">
 
     <StackPanel VerticalAlignment="Center">
-        <Button
-            Content="  X  "
-            HorizontalAlignment="Right"
-            VerticalAlignment="Top" />
-        <CheckBox
-            Content="항상 위 "
-            HorizontalAlignment="Right"/>
-        <TextBlock
+        <!--<TextBlock
             FontSize="14"
             Text="{Binding Player.CurrentMusic.Title}"
-            TextAlignment="Center" HorizontalAlignment="Left" Width="357" />
+            TextAlignment="Center" HorizontalAlignment="Left" Width="357" />-->
 
         <TextBlock
             FontSize="18"

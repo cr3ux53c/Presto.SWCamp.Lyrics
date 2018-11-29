@@ -5,7 +5,7 @@ VisualStudioVersion = 15.0.28010.2050
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Presto.SWCamp.Lyrics", "Presto.SWCamp.Lyrics\Presto.SWCamp.Lyrics.csproj", "{B8D83401-DB04-4552-AA18-077DB271C984}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StickyWindowLibrary", "..\WpfApp1\StickyWindowLibrary\StickyWindowLibrary.csproj", "{AF76FEA7-CD9D-4093-B617-BC9C44DE99C6}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StickyWindowLibrary", "StickyWindowLibrary\StickyWindowLibrary.csproj", "{AF76FEA7-CD9D-4093-B617-BC9C44DE99C6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

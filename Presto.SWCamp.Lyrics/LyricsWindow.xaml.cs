@@ -17,9 +17,12 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using System.Windows.Threading;
+using Blue.Windows;
+using StickyWindowLibrary;
 
 namespace Presto.SWCamp.Lyrics {
     public partial class LyricsWindow : Window {
+        private StickyWindow _stickyWindow;
         String[] lyricsRaw;
         DispatcherTimer timer;
         List<String> list;
@@ -28,8 +31,16 @@ namespace Presto.SWCamp.Lyrics {
 
         public LyricsWindow() {
             InitializeComponent();
-
+            this.Loaded += onLoaded;
             PrestoSDK.PrestoService.Player.StreamChanged += Player_StreamChanged;
+        }
+
+        void onLoaded(object sender, RoutedEventArgs e) {
+            _stickyWindow = new StickyWindow(this);
+            _stickyWindow.StickToScreen = true;
+            _stickyWindow.StickToOther = true;
+            _stickyWindow.StickOnResize = true;
+            _stickyWindow.StickOnMove = true;
         }
 
         private void Player_StreamChanged(object sender, Common.StreamChangedEventArgs e) {
@@ -73,6 +84,7 @@ namespace Presto.SWCamp.Lyrics {
         private void Timer_Tick(object sender, EventArgs e) {
             int currentPlayTime = (int)PrestoSDK.PrestoService.Player.Position;
 
+            this.Title = PrestoSDK.PrestoService.Player.CurrentMusic.Title + " - " + PrestoSDK.PrestoService.Player.CurrentMusic.Artist.Name; ;
             // 도입부 '노래 - 가수명' 출력
             if (currentPlayTime < time[0].TotalMilliseconds-1000*10) {
                 text_lyrics.Text = PrestoSDK.PrestoService.Player.CurrentMusic.Title + " - " + PrestoSDK.PrestoService.Player.CurrentMusic.Artist.Name;
@@ -102,10 +114,47 @@ namespace Presto.SWCamp.Lyrics {
             }
         }
 
-        protected override void OnMouseMove(MouseEventArgs e) {
-            if (MouseButtonState.Pressed == Mouse.LeftButton) {
-                this.DragMove();
+        /// <summary>
+        /// 커서 기반 동적 윈도우 스타일링
+        /// 
+        /// StickyWindowLibrary에서 WindowStyle == NONE 일 때 작동하지 않음.
+        /// </summary>
+
+        //protected override void OnMouseMove(MouseEventArgs e) {
+        //    if (MouseButtonState.Pressed == Mouse.LeftButton) {
+        //        this.DragMove();
+        //    }
+        //}
+
+        private DispatcherTimer dispatcher;
+
+        private bool leaveThreshold = false;
+
+        protected override void OnMouseEnter(MouseEventArgs e) {
+            base.OnMouseEnter(e);
+            this.WindowStyle = WindowStyle.ToolWindow;
+            leaveThreshold = false;
+            
+        }
+
+        protected override void OnMouseLeave(MouseEventArgs e) {
+            base.OnMouseLeave(e);
+            if (dispatcher == null) {
+                dispatcher = new DispatcherTimer();
+                dispatcher.Interval = TimeSpan.FromMilliseconds(2000);
+                dispatcher.Tick += Timer_Tick_Sticky;
+                dispatcher.Start();
+            }
+            leaveThreshold = true;
+        }
+
+        private void Timer_Tick_Sticky(object sender, EventArgs e) {
+            dispatcher.Stop();
+            dispatcher = null;
+            if (leaveThreshold) {
+                this.WindowStyle = WindowStyle.None;
             }
         }
+
     }
 }
