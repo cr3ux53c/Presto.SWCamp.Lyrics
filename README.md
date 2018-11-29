@@ -21,8 +21,9 @@ This Plug-in is tested on Presto 1.2.1.3 version.
 
 This Plug-in is free software released under the MIT License.
 
-Credits
+이 플러그인은 아래 외부 라이브러리를 참조하였습니다.
+ * Sticky Windows Library : https://www.codeproject.com/Articles/6045/Sticky-Windows-How-to-make-your-top-level-forms-to
 
-  * Sticky Windows Library https://www.codeproject.com/Articles/6045/Sticky-Windows-How-to-make-your-top-level-forms-to
+ ---
 
 Copyright (C) 2018 by [@94JuHo](https://github.com/94JuHo), [@cr3ux53c](https://github.com/cr3ux53c), All rights reserved.
