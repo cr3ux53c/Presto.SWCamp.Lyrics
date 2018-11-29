@@ -20,6 +20,8 @@ using System.Windows.Threading;
 using Blue.Windows;
 using StickyWindowLibrary;
 using System.Drawing;
+using System.Resources;
+using System.Reflection;
 
 namespace Presto.SWCamp.Lyrics {
     public partial class LyricsWindow : Window {
@@ -48,7 +50,6 @@ namespace Presto.SWCamp.Lyrics {
             InitializeComponent();
 
             this.Loaded += OnLoaded;
-
 
             //텍스트블럭 색깔지정-> 3번이 현재가사, 1,2번 이전가사, 4,5번 다음가사
             //가사별 투명도 별도 지정(현재 가사에 집중됨)

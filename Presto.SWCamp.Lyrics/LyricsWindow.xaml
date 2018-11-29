@@ -13,7 +13,9 @@
     WindowStartupLocation="CenterOwner"
     WindowStyle="ToolWindow"
     ResizeMode="NoResize" Opacity="0.8">
-
+    <!--<Window.Background>
+        <ImageBrush ImageSource="B:/tmp/logo.png" />
+    </Window.Background>-->
     <!--AllowsTransparency="True"
     <Window.Background>
         <SolidColorBrush Color="#4CC8C8C8"/>
