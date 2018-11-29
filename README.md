@@ -15,7 +15,7 @@
 1. 자석 윈도우 지원
 
 ## 2. 스크린샷
-![1](https://user-images.githubusercontent.com/28856527/49240155-ea909780-f447-11e8-9a3f-3fc4cda73e4b.png)
+![1](https://user-images.githubusercontent.com/28856527/49243741-680cd580-f451-11e8-9833-3e329086ffa9.gif)
 ![1](https://user-images.githubusercontent.com/28856527/49239947-6807d800-f447-11e8-9704-55a40158390b.gif)
 ![1](https://user-images.githubusercontent.com/28856527/49240058-a9988300-f447-11e8-9348-6e49b8897ba4.gif)
 ![1](https://user-images.githubusercontent.com/28856527/49240283-2f1c3300-f448-11e8-84fb-72e15aca10e0.png)
