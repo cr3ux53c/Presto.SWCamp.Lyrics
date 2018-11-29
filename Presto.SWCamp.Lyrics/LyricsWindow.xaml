@@ -5,7 +5,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:ps="clr-namespace:Presto.SDK;assembly=Presto.SDK"
-    Title="플레이어 가사 창"
+    Title="Presto Floating Lyrics"
     Width="500"
     Height="200"
     DataContext="{x:Static ps:PrestoSDK.PrestoService}"
@@ -14,8 +14,8 @@
     WindowStyle="ToolWindow"
     ResizeMode="NoResize">
 
-    <!--AllowsTransparency="True"-->
-    <!--<Window.Background>
+    <!--AllowsTransparency="True"
+    <Window.Background>
         <SolidColorBrush Color="#4CC8C8C8"/>
     </Window.Background>-->
     
