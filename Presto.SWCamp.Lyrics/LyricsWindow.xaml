@@ -10,7 +10,7 @@
     Height="200"
     DataContext="{x:Static ps:PrestoSDK.PrestoService}"
     mc:Ignorable="d"
-    WindowStartupLocation="CenterScreen"
+    WindowStartupLocation="CenterOwner"
     WindowStyle="ToolWindow"
     ResizeMode="NoResize">
 
