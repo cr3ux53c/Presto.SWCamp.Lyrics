@@ -7,11 +7,11 @@ using System.Windows;
 // 어셈블리에 대한 일반 정보는 다음 특성 집합을 통해 
 // 제어됩니다. 어셈블리와 관련된 정보를 수정하려면
 // 이러한 특성 값을 변경하세요.
-[assembly: AssemblyTitle("Presto.SWCamp.Lyrics")]
+[assembly: AssemblyTitle("Floating Lyrics for Presto")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("Presto.SWCamp.Lyrics")]
+[assembly: AssemblyProduct("Presto")]
 [assembly: AssemblyCopyright("Copyright (C) 2018 by 94JuHo@GitHub, cr3ux53c@GitHub, All rights reserved.")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]

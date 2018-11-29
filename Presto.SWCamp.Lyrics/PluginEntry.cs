@@ -4,7 +4,7 @@ using System;
 using System.IO;
 using System.Windows.Threading;
 
-[assembly: PrestoTitle("Lyrics")]
+[assembly: PrestoTitle("Floating Lyrics")]
 [assembly: PrestoAuthor("SW Camp")]
 [assembly: PrestoDescription("가사 플러그인 입니다.")]
 
