@@ -25,7 +25,7 @@ namespace Presto.SWCamp.Lyrics {
     public partial class LyricsWindow : Window {
         private const int WINDOW_HEIGHT_NORMAL = 230;
         private const int WINDOW_HEIGHT_FULL_LYRICS = 500;
-        private const int WINDOW_HEIGHT_MULTILINE = 450;
+        private const int WINDOW_HEIGHT_MULTILINE = 470;
 
         private StickyWindow _stickyWindow;
         private List<LyricsPair> timeline;
