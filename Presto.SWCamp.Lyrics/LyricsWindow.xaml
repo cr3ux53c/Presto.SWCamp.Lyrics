@@ -31,7 +31,11 @@
             FontSize="14"
             Text="{Binding Player.CurrentMusic.Title}"
             TextAlignment="Center" HorizontalAlignment="Center" Width="357" FontWeight="Bold" />-->
-
+        <CheckBox x:Name="TopCheck" VerticalAlignment="Top" HorizontalAlignment="Right" Content="항상 위로" Checked="TopCheck_Checked" Unchecked="TopCheck_Unchecked" IsChecked="True" Margin="0,0,5,0">
+            <CheckBox.Foreground>
+                <SolidColorBrush Color="{DynamicResource {x:Static SystemColors.GradientActiveCaptionColorKey}}"/>
+            </CheckBox.Foreground>
+        </CheckBox>
         <TextBlock
             FontSize="18"
             x:Name="text_lyrics"
