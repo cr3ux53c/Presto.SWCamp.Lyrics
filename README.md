@@ -5,23 +5,24 @@
 
 ---
 
-## 1. ÁÖ¿ä ±â´É
+## 1. ì£¼ìš” ê¸°ëŠ¥
 
-1. LRC °¡»ç ÆÄÀÏ Ãâ·Â (Æ¯¼ö ¹®ÀÚ Æ÷ÇÔ)
-1. °¡»ç À§Ä¡ ÀÌµ¿ Áö¿ø
-1. ´ÙÁß ¶óÀÎ Ãâ·Â Áö¿ø
-1. ÀüÃ¼ °¡»ç Ãâ·Â Áö¿ø
-1. Ç×»ó À§(TopMost) Áö¿ø
-1. ÀÚ¼® À©µµ¿ì Áö¿ø
+1. LRC ê°€ì‚¬ íŒŒì¼ ì¶œë ¥ (íŠ¹ìˆ˜ ë¬¸ì í¬í•¨)
+1. ê°€ì‚¬ ìœ„ì¹˜ ì´ë™ ì§€ì›
+1. ë‹¤ì¤‘ ë¼ì¸ ì¶œë ¥ ì§€ì›
+1. ì „ì²´ ê°€ì‚¬ ì¶œë ¥ ì§€ì›
+1. í•­ìƒ ìœ„(TopMost) ì§€ì›
+1. ìì„ ìœˆë„ìš° ì§€ì›
 
-## 2. ½ºÅ©¸°¼¦
-
-## 3. Á¤º¸
+## 2. ìŠ¤í¬ë¦°ìƒ·
+![1](https://user-images.githubusercontent.com/28856527/49225635-f53b3480-f427-11e8-90f8-eee1741f336f.JPG)
+![2](https://user-images.githubusercontent.com/28856527/49225637-f66c6180-f427-11e8-81ff-2baa1770d271.JPG)
+## 3. ì •ë³´
 This Plug-in is tested on [Presto](http://www.kodnix.com/Services/Presto) 1.2.1.3 version.
 
 This Plug-in is free software released under the MIT License.
 
-ÀÌ ÇÃ·¯±×ÀÎÀº ¾Æ·¡ ¿ÜºÎ ¶óÀÌºê·¯¸®¸¦ ÂüÁ¶ÇÏ¿´½À´Ï´Ù.
+ì´ í”ŒëŸ¬ê·¸ì¸ì€ ì•„ë˜ ì™¸ë¶€ ë¼ì´ë¸ŒëŸ¬ë¦¬ë¥¼ ì°¸ì¡°í•˜ì˜€ìŠµë‹ˆë‹¤.
  * Sticky Windows Library : https://www.codeproject.com/Articles/6045/Sticky-Windows-How-to-make-your-top-level-forms-to
 
  ---
