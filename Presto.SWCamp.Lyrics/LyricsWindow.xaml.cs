@@ -32,8 +32,8 @@ namespace Presto.SWCamp.Lyrics {
         private List<TextBlock> lyricsTextBlock = new List<TextBlock>();
         private DispatcherTimer timer;
         private int currentLyricIndex;
-        private bool isEnabledFullLyrics = false;
-        private bool isMultilineLyrics = false;
+        private bool isFullLyricsViewer = false;
+        private bool isMultilineLyrics;
 
         private class LyricsPair {
             public TimeSpan timeline;
@@ -78,6 +78,7 @@ namespace Presto.SWCamp.Lyrics {
         }
 
         private void Player_StreamChanged(object sender, Common.StreamChangedEventArgs e) {
+            isMultilineLyrics = false;
             String[] lyricsRaw;
             String filePath = PrestoSDK.PrestoService.Player.CurrentMusic.Path;
 
@@ -125,6 +126,7 @@ namespace Presto.SWCamp.Lyrics {
                 // 가사 추출
                 if (timeline.Count > 0 && timeline[timeline.Count-1].timeline.TotalMilliseconds == timeSpan.TotalMilliseconds) {
                     timeline[timeline.Count -1].lyrics += "\n" + line.Substring(threshold + 1);
+                    isMultilineLyrics = true;
                 } else {
                     timeline.Add(new LyricsPair(timeSpan, line.Substring(threshold + 1)));
                 }
@@ -140,14 +142,12 @@ namespace Presto.SWCamp.Lyrics {
             }
 
             //다국어 가사이면 창크기를 늘리고 위치를 위로 조금 올림
-            if (!isEnabledFullLyrics) {
-                if (timeline[3].lyrics.Contains("\n")) {
-                    isMultilineLyrics = true;
+            if (!isFullLyricsViewer) {
+                if (isMultilineLyrics) {
                     lyricsWindow.Height = WINDOW_HEIGHT_MULTILINE;
                     if (lyricsWindow.Top + lyricsWindow.Height > System.Windows.Forms.Screen.PrimaryScreen.Bounds.Height)
                         lyricsWindow.Top -= WINDOW_HEIGHT_NORMAL;
                 } else {
-                    isMultilineLyrics = false;
                     lyricsWindow.Height = WINDOW_HEIGHT_NORMAL;
                 }
             }
@@ -277,61 +277,63 @@ namespace Presto.SWCamp.Lyrics {
                 timerSlidingWindow = new DispatcherTimer {
                     Interval = TimeSpan.FromMilliseconds(2)
                 };
-                if (button_full_lyrics.Content.Equals("∨")) {
-                    timerSlidingWindow.Tick += Timer_Tick_Sliding_Down_Window;
-                } else {
-                    timerSlidingWindow.Tick += Timer_Tick_Sliding_Up_Window;
-                }
+                timerSlidingWindow.Tick += Timer_Tick_Sliding_Window;
                 timerSlidingWindow.Start();
             }
         }
 
         private void Timer_Tick_Sliding_Window(object sender, EventArgs e) {
-
-        }
-
-        private void Timer_Tick_Sliding_Up_Window(object sender, EventArgs e) {
-            this.Height -= SlidingWindowSize;
             if (SlidingWindowSize >= 5) SlidingWindowSize -= 4;
 
-            if (this.Height != 100) {
-                foreach (var lyrics in lyricsTextBlock) {
-                    lyrics.Visibility = Visibility.Visible;
+            if (button_full_lyrics.Content.Equals("∨")) { // TO INCREASE
+                // runOnce
+                if (!isFullLyricsViewer) { 
+                    isFullLyricsViewer = true;
+                    if (SlidingWindowSize != 100) {
+                        foreach (var lyrics in lyricsTextBlock) {
+                            lyrics.Visibility = Visibility.Collapsed;
+                        }
+                        scroll_full_lyrics.Visibility = Visibility.Visible;
+                        scroll_full_lyrics.VerticalScrollBarVisibility = ScrollBarVisibility.Visible;
+                    }
                 }
-                scroll_full_lyrics.Visibility = Visibility.Collapsed;
-                scroll_full_lyrics.VerticalScrollBarVisibility = ScrollBarVisibility.Hidden;
+
+                this.Height += SlidingWindowSize;
+
+                if (this.Height >= WINDOW_HEIGHT_FULL_LYRICS) {
+                    this.Height = WINDOW_HEIGHT_FULL_LYRICS;
+                    timerSlidingWindow.Stop();
+                    button_full_lyrics.Content = "∧";
+                    SlidingWindowSize = 40;
+                    isFullLyricsViewer = true;
+                }
+            } else {                                       // TO DECRESE
+                // runOnce
+                if (isFullLyricsViewer) {
+                    isFullLyricsViewer = false;
+                    if (SlidingWindowSize != 100) {
+                        foreach (var lyrics in lyricsTextBlock) {
+                            lyrics.Visibility = Visibility.Visible;
+                        }
+                        scroll_full_lyrics.Visibility = Visibility.Collapsed;
+                        scroll_full_lyrics.VerticalScrollBarVisibility = ScrollBarVisibility.Visible;
+                    }
+                }
+
+                this.Height -= SlidingWindowSize;
+                
+                if (this.Height <= (isMultilineLyrics ? WINDOW_HEIGHT_MULTILINE : WINDOW_HEIGHT_NORMAL)) {
+                    this.Height = (isMultilineLyrics ? WINDOW_HEIGHT_MULTILINE : WINDOW_HEIGHT_NORMAL);
+                    timerSlidingWindow.Stop();
+                    button_full_lyrics.Content = "∨";
+                    SlidingWindowSize = 40;
+                    isFullLyricsViewer = false;
+                }
             }
+
+            
 
             timerSlidingWindow.Interval = TimeSpan.FromMilliseconds(timerSlidingWindow.Interval.TotalMilliseconds + 1);
-            if (this.Height <= (isMultilineLyrics ? WINDOW_HEIGHT_MULTILINE : WINDOW_HEIGHT_NORMAL)) {
-                this.Height = (isMultilineLyrics ? WINDOW_HEIGHT_MULTILINE : WINDOW_HEIGHT_NORMAL);
-                timerSlidingWindow.Stop();
-                button_full_lyrics.Content = "∨";
-                SlidingWindowSize = 40;
-                isEnabledFullLyrics = false;
-            }
-        }
-
-        private void Timer_Tick_Sliding_Down_Window(object sender, EventArgs e) {
-            this.Height += SlidingWindowSize;
-            if (SlidingWindowSize >= 5) SlidingWindowSize -= 4;
-
-            if (SlidingWindowSize != 100) {
-                foreach (var lyrics in lyricsTextBlock) {
-                    lyrics.Visibility = Visibility.Collapsed;
-                }
-                scroll_full_lyrics.Visibility = Visibility.Visible;
-                scroll_full_lyrics.VerticalScrollBarVisibility = ScrollBarVisibility.Visible;
-            }
-
-            timerSlidingWindow.Interval = TimeSpan.FromMilliseconds(timerSlidingWindow.Interval.TotalMilliseconds + 1);
-            if (this.Height >= WINDOW_HEIGHT_FULL_LYRICS) {
-                this.Height = WINDOW_HEIGHT_FULL_LYRICS;
-                timerSlidingWindow.Stop();
-                button_full_lyrics.Content = "∧";
-                SlidingWindowSize = 40;
-                isEnabledFullLyrics = true;
-            }
         }
     }
 }
