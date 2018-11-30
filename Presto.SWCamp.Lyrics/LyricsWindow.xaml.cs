@@ -37,6 +37,7 @@ namespace Presto.SWCamp.Lyrics {
         private bool isFullLyricsViewer = false;
         private bool isMultilineLyrics;
         private bool MultilineLyrics_Check=false;
+        private bool isLyricsFileExist=false;
         private double Origin_WindowTop;
 
         private class LyricsPair {
@@ -84,12 +85,13 @@ namespace Presto.SWCamp.Lyrics {
             isMultilineLyrics = false;
             String[] lyricsRaw;
             String filePath = PrestoSDK.PrestoService.Player.CurrentMusic.Path;
-
             
             //앞의 노래 가사 지우기
             foreach (var lyrics in lyricsTextBlock)
                 lyrics.Text = "";
-            
+            if (timer != null)
+                timer.Stop();
+
             //윈도우폼 배경을 현재 앨범 이미지로 변경
             String albumPicture = PrestoSDK.PrestoService.Player.CurrentMusic.Album.Picture;
             ImageBrush BackPicture = new ImageBrush(new BitmapImage(new Uri(albumPicture))) {
@@ -101,14 +103,25 @@ namespace Presto.SWCamp.Lyrics {
             currentLyricIndex = 0;
             try {
                 lyricsRaw = File.ReadAllLines(filePath.Substring(0, filePath.Length-4) + ".lrc");
-            }catch (System.IO.FileNotFoundException) {
+                isLyricsFileExist = true;
+            } catch (System.IO.FileNotFoundException) {
+                isLyricsFileExist = false;
+
+                // 가사 파일 존재하지 않을 시 컨트롤 숨기기
                 this.Title = "Presto Floating Lyrics";
                 foreach (var lyrics in lyricsTextBlock)
-                    lyrics.Text = "";
+                    lyrics.Visibility = Visibility.Collapsed;
                 lyricsTextBlock[1].Text = "가사 파일 없음";
-                if (timer != null)
-                    timer.Stop();
+                lyricsTextBlock[1].Visibility = Visibility.Visible;
+                button_full_lyrics.Visibility = Visibility.Collapsed;
+                isMultilineLyrics = false;
+
                 return;
+            } finally {
+                // 가사 파일 존재할 시 컨트롤 숨기기 해제
+                foreach (var lyrics in lyricsTextBlock)
+                    lyrics.Visibility = Visibility.Visible;
+                //button_full_lyrics.Visibility = Visibility.Visible;
             }
 
             timeline = new List<LyricsPair>();
@@ -243,7 +256,9 @@ namespace Presto.SWCamp.Lyrics {
             base.OnMouseEnter(e);
             this.WindowStyle = WindowStyle.ToolWindow;
             TopCheck.Visibility = Visibility.Visible;
-            button_full_lyrics.Visibility = Visibility.Visible;
+            if (isLyricsFileExist)
+                button_full_lyrics.Visibility = Visibility.Visible;
+            TopCheck.Visibility = Visibility.Visible;
             leaveThreshold = false;
             
         }
@@ -257,6 +272,8 @@ namespace Presto.SWCamp.Lyrics {
                 dispatcher.Tick += Timer_Tick_Sticky;
                 dispatcher.Start();
             }
+            button_full_lyrics.Visibility = Visibility.Hidden;
+            TopCheck.Visibility = Visibility.Hidden;
             leaveThreshold = true;
         }
 
@@ -265,8 +282,6 @@ namespace Presto.SWCamp.Lyrics {
             dispatcher = null;
             if (leaveThreshold) {
                 this.WindowStyle = WindowStyle.None;
-                TopCheck.Visibility = Visibility.Hidden;
-                button_full_lyrics.Visibility = Visibility.Hidden;
             }
         }
 
