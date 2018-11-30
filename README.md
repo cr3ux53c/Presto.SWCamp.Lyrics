@@ -3,6 +3,8 @@
 <img src="https://img.shields.io/badge/License-MIT-lightgrey.svg" alt="License: MIT"> ![GitHub pull requests](https://img.shields.io/github/issues-pr/cr3ux53c/Presto.SWCamp.Lyrics.svg) ![GitHub (pre-)release](https://img.shields.io/github/release-pre/cr3ux53c/Presto.SWCamp.Lyrics.svg) 
 ![GitHub stars](https://img.shields.io/github/stars/cr3ux53c/Presto.SWCamp.Lyrics.svg?label=Stars&style=social)
 
+## [플러그인 다운로드](https://github.com/cr3ux53c/Presto.SWCamp.Lyrics/releases)
+
 ---
 
 ## 1. 주요 기능
