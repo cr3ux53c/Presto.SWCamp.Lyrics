@@ -5,23 +5,28 @@
 
 ---
 
-## 1. ÁÖ¿ä ±â´É
+## 1. ì£¼ìš” ê¸°ëŠ¥
 
-1. LRC °¡»ç ÆÄÀÏ Ãâ·Â (Æ¯¼ö ¹®ÀÚ Æ÷ÇÔ)
-1. °¡»ç À§Ä¡ ÀÌµ¿ Áö¿ø
-1. ´ÙÁß ¶óÀÎ Ãâ·Â Áö¿ø
-1. ÀüÃ¼ °¡»ç Ãâ·Â Áö¿ø
-1. Ç×»ó À§(TopMost) Áö¿ø
-1. ÀÚ¼® À©µµ¿ì Áö¿ø
+1. LRC ê°€ì‚¬ íŒŒì¼ ì¶œë ¥ (íŠ¹ìˆ˜ ë¬¸ì í¬í•¨)
+1. ê°€ì‚¬ ìœ„ì¹˜ ì´ë™ ì§€ì›
+1. ë‹¤ì¤‘ ë¼ì¸ ì¶œë ¥ ì§€ì›
+1. ì „ì²´ ê°€ì‚¬ ì¶œë ¥ ì§€ì›
+1. í•­ìƒ ìœ„(TopMost) ì§€ì›
+1. ìì„ ìœˆë„ìš° ì§€ì›
 
-## 2. ½ºÅ©¸°¼¦
-
-## 3. Á¤º¸
-This Plug-in is tested on Presto 1.2.1.3 version.
+## 2. ìŠ¤í¬ë¦°ìƒ·
+![1](https://user-images.githubusercontent.com/28856527/49240155-ea909780-f447-11e8-9a3f-3fc4cda73e4b.png)
+![1](https://user-images.githubusercontent.com/28856527/49239947-6807d800-f447-11e8-9704-55a40158390b.gif)
+![1](https://user-images.githubusercontent.com/28856527/49240058-a9988300-f447-11e8-9348-6e49b8897ba4.gif)
+![1](https://user-images.githubusercontent.com/28856527/49240283-2f1c3300-f448-11e8-84fb-72e15aca10e0.png)
+## 3. ì •ë³´
+This Plug-in is tested on [Presto](http://www.kodnix.com/Services/Presto) 1.2.1.3 version.
 
 This Plug-in is free software released under the MIT License.
 
-Credits
-	* Sticky Windows Library https://www.codeproject.com/Articles/6045/Sticky-Windows-How-to-make-your-top-level-forms-to
+ì´ í”ŒëŸ¬ê·¸ì¸ì€ ì•„ë˜ ì™¸ë¶€ ë¼ì´ë¸ŒëŸ¬ë¦¬ë¥¼ ì°¸ì¡°í•˜ì˜€ìŠµë‹ˆë‹¤.
+ * Sticky Windows Library : https://www.codeproject.com/Articles/6045/Sticky-Windows-How-to-make-your-top-level-forms-to
+
+ ---
 
 Copyright (C) 2018 by [@94JuHo](https://github.com/94JuHo), [@cr3ux53c](https://github.com/cr3ux53c), All rights reserved.

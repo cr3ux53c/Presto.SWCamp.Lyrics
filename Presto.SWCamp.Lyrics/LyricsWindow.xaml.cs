@@ -23,18 +23,33 @@ using System.Drawing;
 
 namespace Presto.SWCamp.Lyrics {
     public partial class LyricsWindow : Window {
+        private const int WINDOW_HEIGHT_NORMAL = 230;
+        private const int WINDOW_HEIGHT_FULL_LYRICS = 500;
+        private const int WINDOW_HEIGHT_MULTILINE = 450;
+
         private StickyWindow _stickyWindow;
-        String[] lyricsRaw;
-        DispatcherTimer timer;
-        List<String> list;
-        List<TimeSpan> time;
-        List<TextBlock> lyricsTextBlock = new List<TextBlock>();
-        int currentLyricIndex;
-        double OriginTop;
+        private List<LyricsPair> timeline;
+        private List<TextBlock> lyricsTextBlock = new List<TextBlock>();
+        private DispatcherTimer timer;
+        private int currentLyricIndex;
+        private bool isFullLyricsViewer = false;
+        private bool isMultilineLyrics;
+        private bool MultilineLyrics_Check=false;
+        private double Origin_WindowTop;
+
+        private class LyricsPair {
+            public TimeSpan timeline;
+            public string lyrics;
+            public LyricsPair(TimeSpan timeline, string lyrics) {
+                this.timeline = timeline;
+                this.lyrics = lyrics;
+            }
+        }
 
         public LyricsWindow() {
             InitializeComponent();
-            this.Loaded += onLoaded;
+
+            this.Loaded += OnLoaded;
 
 
             //텍스트블럭 색깔지정-> 3번이 현재가사, 1,2번 이전가사, 4,5번 다음가사
@@ -46,7 +61,7 @@ namespace Presto.SWCamp.Lyrics {
             lyricsTextBlock.Add(text_lyrics5);
 
             //텍스트블럭 색깔지정-> 3번이 현재가사, 1,2번 이전가사, 4,5번 다음가사
-            foreach (TextBlock lyrics in lyricsTextBlock)
+            foreach (var lyrics in lyricsTextBlock)
                 lyrics.Foreground = new SolidColorBrush(Colors.GhostWhite);
             lyricsTextBlock[0].Foreground.Opacity = 0.3;
             lyricsTextBlock[1].Foreground.Opacity = 0.6;
@@ -55,32 +70,30 @@ namespace Presto.SWCamp.Lyrics {
             lyricsTextBlock[4].Foreground.Opacity = 0.3;
 
             PrestoSDK.PrestoService.Player.StreamChanged += Player_StreamChanged;
+            button_full_lyrics.Click += Button_full_lyrics_Click;
         }
 
-        void onLoaded(object sender, RoutedEventArgs e) {
-            _stickyWindow = new StickyWindow(this);
-            _stickyWindow.StickToScreen = true;
-            _stickyWindow.StickToOther = true;
-            _stickyWindow.StickOnResize = true;
-            _stickyWindow.StickOnMove = true;
-            OriginTop = lyricsWindow.Top;
+        void OnLoaded(object sender, RoutedEventArgs e) {
+            _stickyWindow = new StickyWindow(this) {
+                StickToScreen = true, StickToOther = true, StickOnResize = true, StickOnMove = true
+            };
         }
 
         private void Player_StreamChanged(object sender, Common.StreamChangedEventArgs e) {
-            
+            isMultilineLyrics = false;
+            String[] lyricsRaw;
             String filePath = PrestoSDK.PrestoService.Player.CurrentMusic.Path;
 
             
             //앞의 노래 가사 지우기
-            foreach (TextBlock lyrics in lyricsTextBlock)
+            foreach (var lyrics in lyricsTextBlock)
                 lyrics.Text = "";
             
             //윈도우폼 배경을 현재 앨범 이미지로 변경
             String albumPicture = PrestoSDK.PrestoService.Player.CurrentMusic.Album.Picture;
-            ImageBrush BackPicture = new ImageBrush(new BitmapImage(new Uri(albumPicture)));
-
-            BackPicture.Opacity = 0.2;
-            BackPicture.Stretch = Stretch.UniformToFill;
+            ImageBrush BackPicture = new ImageBrush(new BitmapImage(new Uri(albumPicture))) {
+                Opacity = 0.2, Stretch = Stretch.UniformToFill
+            };
             this.Background = BackPicture;
 
             // 가사 파일 읽기
@@ -89,48 +102,66 @@ namespace Presto.SWCamp.Lyrics {
                 lyricsRaw = File.ReadAllLines(filePath.Substring(0, filePath.Length-4) + ".lrc");
             }catch (System.IO.FileNotFoundException) {
                 this.Title = "Presto Floating Lyrics";
-                foreach (TextBlock lyrics in lyricsTextBlock)
+                foreach (var lyrics in lyricsTextBlock)
                     lyrics.Text = "";
                 lyricsTextBlock[1].Text = "가사 파일 없음";
                 if (timer != null)
                     timer.Stop();
                 return;
             }
-            list = new List<string>();
-            time = new List<TimeSpan>();
+
+            timeline = new List<LyricsPair>();
 
             // 가사 파싱
             foreach (var line in lyricsRaw) {
-                if (line[1] > 64) {
+                if (line[1] > 64) { // ASCII.64 == @
                     continue;
                 }
                 int threshold = line.IndexOf(']');
-                String str = line.Substring(1, threshold-1);
-                var timeSplited = str.Split(new char[] { ':', '.' });
+                
+                // 플레이 타임 추출
+                String timeRaw = line.Substring(1, threshold-1);
+                var timeSplited = timeRaw.Split(new char[] { ':', '.' });
                 TimeSpan timeSpan = new TimeSpan(0, 0, int.Parse(timeSplited[0])
                                             , int.Parse(timeSplited[1])
                                             , int.Parse(timeSplited[2]) * 10);
-                if (time.Count > 0 && time[time.Count-1].TotalMilliseconds == timeSpan.TotalMilliseconds) {
-                    list[list.Count - 1] += "\n" + line.Substring(threshold + 1);
+                // 가사 추출
+                if (timeline.Count > 0 && timeline[timeline.Count-1].timeline.TotalMilliseconds == timeSpan.TotalMilliseconds) {
+                    timeline[timeline.Count -1].lyrics += "\n" + line.Substring(threshold + 1);
+                    isMultilineLyrics = true;
                 } else {
-                    time.Add(timeSpan);
-                    list.Add(line.Substring(threshold+1));
+                    timeline.Add(new LyricsPair(timeSpan, line.Substring(threshold + 1)));
                 }
             }
 
+            //전체 가사 파싱
+            foreach (var line in lyricsRaw) {
+                if (line[1] > 64) { // ASCII.64 == @
+                    text_full_lyrics.Text = "";
+                    continue;
+                }
+                text_full_lyrics.Text += line.Substring(line.IndexOf(']') + 1) + "\n";
+            }
+
             //다국어 가사이면 창크기를 늘리고 위치를 위로 조금 올림
-            if (list[3].Contains("\n"))
-            {
-                lyricsWindow.Height = 450;
-                lyricsWindow.Top = OriginTop;
-                lyricsWindow.Top -= 100;
+            if (!isFullLyricsViewer) {
+                if (isMultilineLyrics) {
+                    lyricsWindow.Height = WINDOW_HEIGHT_MULTILINE;
+                    if (lyricsWindow.Top + lyricsWindow.Height > System.Windows.Forms.Screen.PrimaryScreen.Bounds.Height)
+                    {
+                        Origin_WindowTop = lyricsWindow.Top;
+                        lyricsWindow.Top -= WINDOW_HEIGHT_NORMAL;
+                        MultilineLyrics_Check = true;
+                    }
+                } else {
+                    lyricsWindow.Height = WINDOW_HEIGHT_NORMAL;
+                    if (MultilineLyrics_Check)
+                    {
+                        lyricsWindow.Top = Origin_WindowTop;
+                        MultilineLyrics_Check = false;
+                    }
+                }
             }
-            else
-            {
-                lyricsWindow.Height = 200;
-                lyricsWindow.Top = OriginTop;
-            }
-                
 
             // 타이밍
             timer = new DispatcherTimer {
@@ -145,38 +176,38 @@ namespace Presto.SWCamp.Lyrics {
 
             this.Title = PrestoSDK.PrestoService.Player.CurrentMusic.Title + " - " + PrestoSDK.PrestoService.Player.CurrentMusic.Artist.Name; ;
             // 도입부 '노래 - 가수명' 출력
-            if (currentPlayTime < time[0].TotalMilliseconds-1000*10) {
+            if (currentPlayTime < timeline[0].timeline.TotalMilliseconds-1000*10) {
                 text_lyrics3.Text = PrestoSDK.PrestoService.Player.CurrentMusic.Title + " - " + PrestoSDK.PrestoService.Player.CurrentMusic.Artist.Name;
                 currentLyricIndex = 0;
             }
 
             // FF 가사 이동
-            for ( ; currentLyricIndex < time.Count && currentPlayTime > time[currentLyricIndex].TotalMilliseconds;) {
+            for ( ; currentLyricIndex < timeline.Count && currentPlayTime > timeline[currentLyricIndex].timeline.TotalMilliseconds;) {
 
                 // 마지막 가사 처리
-                if (currentLyricIndex == time.Count-1) {
+                if (currentLyricIndex == timeline.Count-1) {
                     text_lyrics4.Text = "";
-                    text_lyrics.Text = list[currentLyricIndex - 2];
-                    text_lyrics2.Text = list[currentLyricIndex - 1];
-                    text_lyrics3.Text = list[currentLyricIndex];
+                    text_lyrics.Text = timeline[currentLyricIndex - 2].lyrics;
+                    text_lyrics2.Text = timeline[currentLyricIndex - 1].lyrics;
+                    text_lyrics3.Text = timeline[currentLyricIndex].lyrics;
                     break;
                 }
 
                 //이전 가사가 없는 초반 가사들 처리
                 if (currentLyricIndex - 2 >= 0)
-                    text_lyrics.Text = list[currentLyricIndex - 2];
+                    text_lyrics.Text = timeline[currentLyricIndex - 2].lyrics;
                     
                 if(currentLyricIndex -1 >= 0)
-                    text_lyrics2.Text = list[currentLyricIndex - 1];
+                    text_lyrics2.Text = timeline[currentLyricIndex - 1].lyrics;
 
                 // 건너뛰는 가사 있는지 확인
-                if (currentPlayTime < time[currentLyricIndex+1].TotalMilliseconds) {
-                    text_lyrics3.Text = list[currentLyricIndex++];
+                if (currentPlayTime < timeline[currentLyricIndex+1].timeline.TotalMilliseconds) {
+                    text_lyrics3.Text = timeline[currentLyricIndex++].lyrics;
                     //현재 가사 +1,2 출력
-                    text_lyrics4.Text = list[currentLyricIndex];
+                    text_lyrics4.Text = timeline[currentLyricIndex].lyrics;
                     //5번째라인에 마지막줄 가사 처리
-                    if(currentLyricIndex+1 < time.Count)
-                        text_lyrics5.Text = list[currentLyricIndex+1];
+                    if(currentLyricIndex+1 < timeline.Count)
+                        text_lyrics5.Text = timeline[currentLyricIndex+1].lyrics;
                     else
                         text_lyrics5.Text = "";
                     return;
@@ -186,7 +217,7 @@ namespace Presto.SWCamp.Lyrics {
             }
 
             // FR 가사 이동
-            for (; currentLyricIndex > 0 && currentPlayTime < time[currentLyricIndex].TotalMilliseconds;) {
+            for (; currentLyricIndex > 0 && currentPlayTime < timeline[currentLyricIndex].timeline.TotalMilliseconds;) {
                 currentLyricIndex--;
             }
         }
@@ -210,6 +241,8 @@ namespace Presto.SWCamp.Lyrics {
         protected override void OnMouseEnter(MouseEventArgs e) {
             base.OnMouseEnter(e);
             this.WindowStyle = WindowStyle.ToolWindow;
+            TopCheck.Visibility = Visibility.Visible;
+            button_full_lyrics.Visibility = Visibility.Visible;
             leaveThreshold = false;
             
         }
@@ -217,8 +250,9 @@ namespace Presto.SWCamp.Lyrics {
         protected override void OnMouseLeave(MouseEventArgs e) {
             base.OnMouseLeave(e);
             if (dispatcher == null) {
-                dispatcher = new DispatcherTimer();
-                dispatcher.Interval = TimeSpan.FromMilliseconds(2000);
+                dispatcher = new DispatcherTimer {
+                    Interval = TimeSpan.FromMilliseconds(2000)
+                };
                 dispatcher.Tick += Timer_Tick_Sticky;
                 dispatcher.Start();
             }
@@ -230,20 +264,85 @@ namespace Presto.SWCamp.Lyrics {
             dispatcher = null;
             if (leaveThreshold) {
                 this.WindowStyle = WindowStyle.None;
+                TopCheck.Visibility = Visibility.Hidden;
+                button_full_lyrics.Visibility = Visibility.Hidden;
             }
         }
 
         // TopMost 구현
 
-        private void TopCheck_Checked(object sender, RoutedEventArgs e)
-        {
-                lyricsWindow.Topmost = true;
+        private void TopCheck_Checked(object sender, RoutedEventArgs e){
+            lyricsWindow.Topmost = true;
         }
 
-        private void TopCheck_Unchecked(object sender, RoutedEventArgs e)
-        {
-                lyricsWindow.Topmost = false;
+        private void TopCheck_Unchecked(object sender, RoutedEventArgs e){
+            lyricsWindow.Topmost = false;
         }
 
+
+        // 전체 가사 출력
+        DispatcherTimer timerSlidingWindow;
+        int SlidingWindowSize = 40;
+        void Button_full_lyrics_Click(object sender, RoutedEventArgs e) {
+            if (timerSlidingWindow == null || (timerSlidingWindow != null && timerSlidingWindow.IsEnabled == false)) {
+                timerSlidingWindow = new DispatcherTimer {
+                    Interval = TimeSpan.FromMilliseconds(2)
+                };
+                timerSlidingWindow.Tick += Timer_Tick_Sliding_Window;
+                timerSlidingWindow.Start();
+            }
+        }
+
+        private void Timer_Tick_Sliding_Window(object sender, EventArgs e) {
+            if (SlidingWindowSize >= 5) SlidingWindowSize -= 2;
+
+            if (button_full_lyrics.Content.Equals("∨")) { // TO INCREASE
+                // runOnce
+                if (!isFullLyricsViewer) { 
+                    isFullLyricsViewer = true;
+                    if (SlidingWindowSize != 100) {
+                        foreach (var lyrics in lyricsTextBlock) {
+                            lyrics.Visibility = Visibility.Collapsed;
+                        }
+                        scroll_full_lyrics.Visibility = Visibility.Visible;
+                        scroll_full_lyrics.VerticalScrollBarVisibility = ScrollBarVisibility.Visible;
+                    }
+                }
+
+                this.Height += SlidingWindowSize;
+
+                if (this.Height >= WINDOW_HEIGHT_FULL_LYRICS) {
+                    this.Height = WINDOW_HEIGHT_FULL_LYRICS;
+                    timerSlidingWindow.Stop();
+                    button_full_lyrics.Content = "∧";
+                    SlidingWindowSize = 32;
+                    isFullLyricsViewer = true;
+                }
+            } else {                                       // TO DECRESE
+                // runOnce
+                if (isFullLyricsViewer) {
+                    isFullLyricsViewer = false;
+                    if (SlidingWindowSize != 100) {
+                        foreach (var lyrics in lyricsTextBlock) {
+                            lyrics.Visibility = Visibility.Visible;
+                        }
+                        scroll_full_lyrics.Visibility = Visibility.Collapsed;
+                        scroll_full_lyrics.VerticalScrollBarVisibility = ScrollBarVisibility.Visible;
+                    }
+                }
+
+                this.Height -= SlidingWindowSize;
+                
+                if (this.Height <= (isMultilineLyrics ? WINDOW_HEIGHT_MULTILINE : WINDOW_HEIGHT_NORMAL)) {
+                    this.Height = (isMultilineLyrics ? WINDOW_HEIGHT_MULTILINE : WINDOW_HEIGHT_NORMAL);
+                    timerSlidingWindow.Stop();
+                    button_full_lyrics.Content = "∨";
+                    SlidingWindowSize = 32;
+                    isFullLyricsViewer = false;
+                }
+            }
+            
+            timerSlidingWindow.Interval = TimeSpan.FromMilliseconds(timerSlidingWindow.Interval.TotalMilliseconds + 1);
+        }
     }
 }
