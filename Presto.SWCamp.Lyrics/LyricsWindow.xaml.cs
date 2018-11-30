@@ -91,6 +91,11 @@ namespace Presto.SWCamp.Lyrics {
                 lyrics.Text = "";
             if (timer != null)
                 timer.Stop();
+            timeline = new List<LyricsPair>();
+            text_full_lyrics.Text = "";
+            //전체 가사 모드 해제
+            if (isFullLyricsViewer)
+                Button_full_lyrics_Click(null, null);
 
             //윈도우폼 배경을 현재 앨범 이미지로 변경
             String albumPicture = PrestoSDK.PrestoService.Player.CurrentMusic.Album.Picture;
@@ -105,26 +110,23 @@ namespace Presto.SWCamp.Lyrics {
                 lyricsRaw = File.ReadAllLines(filePath.Substring(0, filePath.Length-4) + ".lrc");
                 isLyricsFileExist = true;
             } catch (System.IO.FileNotFoundException) {
-                isLyricsFileExist = false;
-
-                // 가사 파일 존재하지 않을 시 컨트롤 숨기기
-                this.Title = "Presto Floating Lyrics";
-                foreach (var lyrics in lyricsTextBlock)
-                    lyrics.Visibility = Visibility.Collapsed;
-                lyricsTextBlock[1].Text = "가사 파일 없음";
-                lyricsTextBlock[1].Visibility = Visibility.Visible;
-                button_full_lyrics.Visibility = Visibility.Collapsed;
                 isMultilineLyrics = false;
-
-                return;
+                isLyricsFileExist = false;
+                lyricsRaw = new string[] { };
             } finally {
-                // 가사 파일 존재할 시 컨트롤 숨기기 해제
-                foreach (var lyrics in lyricsTextBlock)
-                    lyrics.Visibility = Visibility.Visible;
-                //button_full_lyrics.Visibility = Visibility.Visible;
+                if (isLyricsFileExist) {
+                    foreach (var lyrics in lyricsTextBlock)
+                        lyrics.Visibility = Visibility.Visible;
+                } else { // 가사 파일 존재하지 않을 시 컨트롤 숨기기
+                    this.Title = "Presto Floating Lyrics";
+                    foreach (var lyrics in lyricsTextBlock)
+                        lyrics.Visibility = Visibility.Collapsed;
+                    lyricsTextBlock[1].Text = "가사 파일 없음";
+                    lyricsTextBlock[1].Visibility = Visibility.Visible;
+                    if (!isFullLyricsViewer)
+                        button_full_lyrics.Visibility = Visibility.Hidden;
+                }
             }
-
-            timeline = new List<LyricsPair>();
 
             // 가사 파싱
             foreach (var line in lyricsRaw) {
@@ -157,6 +159,7 @@ namespace Presto.SWCamp.Lyrics {
                 text_full_lyrics.Text += line.Substring(line.IndexOf(']') + 1) + "\n";
             }
 
+
             //다국어 가사이면 창크기를 늘리고 위치를 위로 조금 올림
             if (!isFullLyricsViewer) {
                 if (isMultilineLyrics) {
@@ -178,11 +181,13 @@ namespace Presto.SWCamp.Lyrics {
             }
 
             // 타이밍
-            timer = new DispatcherTimer {
-                Interval = TimeSpan.FromMilliseconds(10)
-            };
-            timer.Tick += Timer_Tick;
-            timer.Start();
+            if (isLyricsFileExist) {
+                timer = new DispatcherTimer {
+                    Interval = TimeSpan.FromMilliseconds(10)
+                };
+                timer.Tick += Timer_Tick;
+                timer.Start();
+            }
         }
 
         private void Timer_Tick(object sender, EventArgs e) {
