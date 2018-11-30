@@ -39,6 +39,7 @@ namespace Presto.SWCamp.Lyrics {
         private bool MultilineLyrics_Check=false;
         private bool isLyricsFileExist=false;
         private double Origin_WindowTop;
+        private bool FullliyricsWindowOver = false;
 
         private class LyricsPair {
             public TimeSpan timeline;
@@ -163,7 +164,7 @@ namespace Presto.SWCamp.Lyrics {
                     if (lyricsWindow.Top + lyricsWindow.Height > System.Windows.Forms.Screen.PrimaryScreen.Bounds.Height)
                     {
                         Origin_WindowTop = lyricsWindow.Top;
-                        lyricsWindow.Top -= WINDOW_HEIGHT_NORMAL;
+                        lyricsWindow.Top -= (this.Top+this.Height)- System.Windows.Forms.Screen.PrimaryScreen.Bounds.Height;
                         MultilineLyrics_Check = true;
                     }
                 } else {
@@ -311,6 +312,7 @@ namespace Presto.SWCamp.Lyrics {
         }
 
         private void Timer_Tick_Sliding_Window(object sender, EventArgs e) {
+            
             if (SlidingWindowSize >= 5) SlidingWindowSize -= 2;
 
             if (button_full_lyrics.Content.Equals("∨")) { // TO INCREASE
@@ -323,6 +325,7 @@ namespace Presto.SWCamp.Lyrics {
                         }
                         scroll_full_lyrics.Visibility = Visibility.Visible;
                         scroll_full_lyrics.VerticalScrollBarVisibility = ScrollBarVisibility.Visible;
+                        
                     }
                 }
 
@@ -334,6 +337,13 @@ namespace Presto.SWCamp.Lyrics {
                     button_full_lyrics.Content = "∧";
                     SlidingWindowSize = 32;
                     isFullLyricsViewer = true;
+
+                    //전체가사창이 해상도보다 높게 올라갈때 위치조정
+                    if (this.Top + this.Height > System.Windows.Forms.Screen.PrimaryScreen.Bounds.Height)
+                    {
+                        lyricsWindow.Top -= (this.Top + this.Height) - System.Windows.Forms.Screen.PrimaryScreen.Bounds.Height;
+                        FullliyricsWindowOver = true;
+                    }
                 }
             } else {                                       // TO DECRESE
                 // runOnce
@@ -356,6 +366,13 @@ namespace Presto.SWCamp.Lyrics {
                     button_full_lyrics.Content = "∨";
                     SlidingWindowSize = 32;
                     isFullLyricsViewer = false;
+
+                    //전체가사에서 원래가사로 돌아왔을경우 이전 플레이어위치로 복귀
+                    if (FullliyricsWindowOver)
+                    {
+                        lyricsWindow.Top += WINDOW_HEIGHT_FULL_LYRICS - (isMultilineLyrics ? WINDOW_HEIGHT_MULTILINE : WINDOW_HEIGHT_NORMAL);
+                        FullliyricsWindowOver = false;
+                    }
                 }
             }
             
