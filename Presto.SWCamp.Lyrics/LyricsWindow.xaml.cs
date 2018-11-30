@@ -34,6 +34,8 @@ namespace Presto.SWCamp.Lyrics {
         private int currentLyricIndex;
         private bool isFullLyricsViewer = false;
         private bool isMultilineLyrics;
+        private bool MultilineLyrics_Check=false;
+        private double Origin_WindowTop;
 
         private class LyricsPair {
             public TimeSpan timeline;
@@ -146,9 +148,18 @@ namespace Presto.SWCamp.Lyrics {
                 if (isMultilineLyrics) {
                     lyricsWindow.Height = WINDOW_HEIGHT_MULTILINE;
                     if (lyricsWindow.Top + lyricsWindow.Height > System.Windows.Forms.Screen.PrimaryScreen.Bounds.Height)
+                    {
+                        Origin_WindowTop = lyricsWindow.Top;
                         lyricsWindow.Top -= WINDOW_HEIGHT_NORMAL;
+                        MultilineLyrics_Check = true;
+                    }
                 } else {
                     lyricsWindow.Height = WINDOW_HEIGHT_NORMAL;
+                    if (MultilineLyrics_Check)
+                    {
+                        lyricsWindow.Top = Origin_WindowTop;
+                        MultilineLyrics_Check = false;
+                    }
                 }
             }
 
@@ -330,9 +341,7 @@ namespace Presto.SWCamp.Lyrics {
                     isFullLyricsViewer = false;
                 }
             }
-
             
-
             timerSlidingWindow.Interval = TimeSpan.FromMilliseconds(timerSlidingWindow.Interval.TotalMilliseconds + 1);
         }
     }
