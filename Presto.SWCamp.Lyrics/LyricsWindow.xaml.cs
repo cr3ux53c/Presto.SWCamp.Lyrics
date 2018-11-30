@@ -65,11 +65,7 @@ namespace Presto.SWCamp.Lyrics {
             //텍스트블럭 색깔지정-> 3번이 현재가사, 1,2번 이전가사, 4,5번 다음가사
             foreach (var lyrics in lyricsTextBlock)
                 lyrics.Foreground = new SolidColorBrush(Colors.GhostWhite);
-            lyricsTextBlock[0].Foreground.Opacity = 0.3;
-            lyricsTextBlock[1].Foreground.Opacity = 0.6;
             lyricsTextBlock[2].Foreground = new SolidColorBrush(Colors.Chocolate);
-            lyricsTextBlock[3].Foreground.Opacity = 0.6;
-            lyricsTextBlock[4].Foreground.Opacity = 0.3;
 
             PrestoSDK.PrestoService.Player.StreamChanged += Player_StreamChanged;
             button_full_lyrics.Click += Button_full_lyrics_Click;
