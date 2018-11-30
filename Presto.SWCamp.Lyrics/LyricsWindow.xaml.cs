@@ -177,7 +177,7 @@ namespace Presto.SWCamp.Lyrics {
 
             this.Title = PrestoSDK.PrestoService.Player.CurrentMusic.Title + " - " + PrestoSDK.PrestoService.Player.CurrentMusic.Artist.Name; ;
             // 도입부 '노래 - 가수명' 출력
-            if (currentPlayTime < timeline[0].timeline.TotalMilliseconds-1000*10) {
+            if (currentPlayTime < timeline[0].timeline.TotalMilliseconds-1000*5) {
                 text_lyrics3.Text = PrestoSDK.PrestoService.Player.CurrentMusic.Title + " - " + PrestoSDK.PrestoService.Player.CurrentMusic.Artist.Name;
                 currentLyricIndex = 0;
             }
